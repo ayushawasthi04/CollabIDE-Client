@@ -12,7 +12,7 @@ import notificationService.notifyObservers.NotificationSubject;
 import urlbuilder.URLBuilder;
 
 public class NotificationManager {
-    private String userId;
+    private final String userId;
     ArrayList<Notification> notificationPool = new ArrayList<>();
     NotificationSubject notify = new Notify();
     NotificationService  notificationService;

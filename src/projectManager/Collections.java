@@ -4,6 +4,7 @@ import codeEditor.networkLayer.SendPostRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import static config.NetworkConfig.PROJECT_ADD_NODE;
 import static config.NetworkConfig.PROJECT_VIEW;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.ConnectivityFailureException;
@@ -31,7 +32,7 @@ public class Collections extends Node {
     private Node addNode(Node node) throws ConnectivityFailureException, UnableToCreateException {
        
         URLBuilder urlBuilder = new URLBuilder(); 
-        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PROJECT_VIEW).toString();
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PROJECT_ADD_NODE).toString();
         urlBuilder.addParameter("path", getPath() + "." + getName());
         String nodeAddUrl = urlBuilder.toString();
             
@@ -46,6 +47,7 @@ public class Collections extends Node {
                     throw new UnableToCreateException("Unable To Create");
                 } else {
                     if (node.getType() == Type.COLLECTION) {
+                        System.err.println("received : " + serializedContent);
                         Collections newCollection = new Gson().fromJson(serializedContent, Collections.class);
                         return newCollection;
                     } else {

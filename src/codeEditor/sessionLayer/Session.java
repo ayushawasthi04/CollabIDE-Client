@@ -15,6 +15,7 @@ import config.Configuration;
 import codeEditor.networkLayer.Request;
 import codeEditor.operation.EditOperations;
 import codeEditor.operation.userOperations.RepositionOperation;
+import static config.NetworkConfig.PUSH_OPERATIONS;
 import static config.NetworkConfig.REGISTER;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.OperationNotExistException;
@@ -90,7 +91,7 @@ public class Session {
         while(!responseBuffer.isEmpty() || !operationBuffer.isEmpty());
         try {
             URLBuilder urlBuilder = new URLBuilder(); 
-            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(REGISTER).toString();
+            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PUSH_OPERATIONS).toString();
             urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
             String pushUrl = urlBuilder.toString();
         

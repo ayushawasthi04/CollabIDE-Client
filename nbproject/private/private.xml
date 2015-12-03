@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/codeEditor/networkLayer/PushService.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/share/Share.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/codeEditor/networkLayer/PollService.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/codeEditor/sessionLayer/RegisterUser.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/codeEditor/networkLayer/Request.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/urlbuilder/URLBuilder.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/codeEditor/networkLayer/NetworkHandler.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/config/NetworkConfig.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/config/Configuration.java</file>
+            <file>file:/C:/Users/dragonslayer/Desktop/CollabIDE_Working/collaborative-ide-client/src/codeEditor/sessionLayer/Session.java</file>
+        </group>
     </open-files>
 </project-private>

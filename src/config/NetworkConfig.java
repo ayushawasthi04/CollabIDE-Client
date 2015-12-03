@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public abstract class NetworkConfig {
     //Default Values;
-    public static String SERVER_ADDRESS = "http://127.0.0.1:3000/";
+    public static String SERVER_ADDRESS = "http://127.0.0.1:3000";
    
     //Registers the user for the first time
     public static String REGISTER = "register";
@@ -46,7 +46,7 @@ public abstract class NetworkConfig {
             
             String SERVER_IP = properties.getProperty("SERVER_IP");
             String SERVER_PORT = properties.getProperty("SERVER_PORT");  
-            SERVER_ADDRESS = "http://" + SERVER_IP + ":" + SERVER_PORT + "/";
+            SERVER_ADDRESS = "http://" + SERVER_IP + ":" + SERVER_PORT;
             
             POLLING_THREAD_SLEEP_TIME  = Integer.parseInt(properties.getProperty("POLLING_THREAD_SLEEP_TIME"));
             NOTIFICATIONS_THREAD_SLEEP_TIME  = Integer.parseInt(properties.getProperty("NOTIFICATIONS_THREAD_SLEEP_TIME"));

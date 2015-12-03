@@ -53,9 +53,11 @@ public class Share {
     }
     
     public static void shareWith(String userId, String projectName, ArrayList<String> shareIds) throws ConnectivityFailureException {
+        
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(SHARE).toString();
         urlBuilder.addParameter("userId", userId);
+        urlBuilder.addParameter("docId", projectName);
         urlBuilder.addParameter("shareId", shareIds.get(0));
         
         String shareUrl = urlBuilder.toString();
