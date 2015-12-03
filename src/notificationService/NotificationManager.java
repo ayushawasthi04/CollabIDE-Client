@@ -39,9 +39,8 @@ public class NotificationManager {
 
     public void clearNotifications(String userId) throws ConnectivityFailureException {
         String url = CLEAR_NOTIFICATION_URL + "?userId=" + userId;
-        Request request = new Request(url, "");
         try {
-            HttpResponse response = SendPostRequest.sendPostRequest(url, "");
+            SendPostRequest.sendPostRequest(url, "");
         } catch (IOException ex) {
             throw new ConnectivityFailureException("Unable to Connect");
         }
