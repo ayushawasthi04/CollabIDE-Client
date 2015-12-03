@@ -4,16 +4,18 @@ import authenticate.entities.LoginInfo;
 import authenticate.exception.IncorrectPasswordException;
 import authenticate.entities.Status;
 import authenticate.entities.User;
-import static config.NetworkConfig.GET_USERINFO_URL;
-import static config.NetworkConfig.LOGIN_URL;
 import codeEditor.networkLayer.SendPostRequest;
 import com.google.gson.Gson;
+import static config.NetworkConfig.GET_USERINFO;
+import static config.NetworkConfig.LOGIN;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.ConnectivityFailureException;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import urlbuilder.URLBuilder;
 import utility.Request;
 
 
@@ -22,7 +24,8 @@ public class Login {
     
     public static User doLogin(String username, String password) throws IncorrectPasswordException, ConnectivityFailureException{ 
         LoginInfo info = new LoginInfo(username, password);
-        String url = LOGIN_URL;
+        URLBuilder urlBuilder = new URLBuilder(); 
+        String url = urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(LOGIN).toString();
         Request request = new Request(url, info.serialize());
         try {
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());        
@@ -49,7 +52,8 @@ public class Login {
     
     private static User getUser(String username, String password) throws ConnectivityFailureException { 
         LoginInfo info = new LoginInfo(username, password);
-        String url = GET_USERINFO_URL;
+        URLBuilder urlBuilder = new URLBuilder(); 
+        String url = urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_USERINFO).toString();
         Request request = new Request(url, info.serialize());
         try {
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());        

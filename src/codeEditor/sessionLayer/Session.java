@@ -12,13 +12,15 @@ import codeEditor.transform.TransformationThread;
 import codeEditor.buffer.Buffer;
 import codeEditor.eventNotification.Observer;
 import config.Configuration;
-import static config.NetworkConfig.PUSH_OPERATIONS_URL;
 import codeEditor.networkLayer.Request;
 import codeEditor.operation.EditOperations;
 import codeEditor.operation.userOperations.RepositionOperation;
+import static config.NetworkConfig.REGISTER;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.OperationNotExistException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import urlbuilder.URLBuilder;
 
 public class Session {
     
@@ -87,7 +89,11 @@ public class Session {
         //Spin lock to let operationBuffer or responseBuffer go empty before any operation can be pushed.
         while(!responseBuffer.isEmpty() || !operationBuffer.isEmpty());
         try {
-            String pushUrl = PUSH_OPERATIONS_URL + "?userId=" + userId + "&docId=" + docId;
+            URLBuilder urlBuilder = new URLBuilder(); 
+            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(REGISTER).toString();
+            urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
+            String pushUrl = urlBuilder.toString();
+        
             if (userOperation.getType() == EditOperations.INSERT){
                 
                 InsertOperation insertOperation = (InsertOperation) userOperation;

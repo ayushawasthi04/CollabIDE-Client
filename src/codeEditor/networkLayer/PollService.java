@@ -1,6 +1,5 @@
 package codeEditor.networkLayer;
 
-import static config.NetworkConfig.GET_OPERATIONS_URL;
 import static config.NetworkConfig.POLLING_THREAD_SLEEP_TIME;
 import codeEditor.operation.Deserializer;
 import codeEditor.buffer.Buffer;
@@ -9,6 +8,8 @@ import codeEditor.sessionLayer.Session;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import static config.NetworkConfig.GET_OPERATIONS;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.apache.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import urlbuilder.URLBuilder;
 
 public final class PollService extends Thread implements NetworkHandler{
     private final String userId;
@@ -80,9 +82,12 @@ public final class PollService extends Thread implements NetworkHandler{
     
     @Override
     public void run(){
-        String getMessage = GET_OPERATIONS_URL + "?userId=" + userId + "&docId=" + docId;
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_OPERATIONS);
+        urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
+        String getRequest = urlBuilder.toString();
         while (!this.isInterrupted()) {
-            handleRequest(new Request(getMessage, ""));
+            handleRequest(new Request(getRequest, ""));
             try {
                 Thread.sleep(POLLING_THREAD_SLEEP_TIME);
             } catch (InterruptedException ex) {

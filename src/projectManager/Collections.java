@@ -1,11 +1,11 @@
 package projectManager;
 
-import static config.NetworkConfig.PROJECT_ADD_NODE_URL;
-import static config.NetworkConfig.PROJECT_VIEW_URL;
 import codeEditor.networkLayer.SendPostRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import static config.NetworkConfig.PROJECT_VIEW;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.ConnectivityFailureException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import urlbuilder.URLBuilder;
 import utility.Request;
 
 public class Collections extends Node {
@@ -28,8 +29,13 @@ public class Collections extends Node {
     }
     
     private Node addNode(Node node) throws ConnectivityFailureException, UnableToCreateException {
-        String nodePath = PROJECT_ADD_NODE_URL + "?path=" + getPath() + "." + getName();
-        Request request = new Request(nodePath, node.toJson());
+       
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PROJECT_VIEW).toString();
+        urlBuilder.addParameter("path", getPath() + "." + getName());
+        String nodeAddUrl = urlBuilder.toString();
+            
+        Request request = new Request(nodeAddUrl, node.toJson());
         try {
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());        
             HttpEntity httpEntity = response.getEntity();
@@ -59,8 +65,13 @@ public class Collections extends Node {
     public ArrayList getContent() throws ConnectivityFailureException {
         try {
             ArrayList<Collections> node = new ArrayList<>();
-            String projectViewURL = PROJECT_VIEW_URL + "?path=" + getPath() + "." + getName();
-            Request request = new Request(projectViewURL, "");
+            
+            URLBuilder urlBuilder = new URLBuilder(); 
+            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PROJECT_VIEW).toString();
+            urlBuilder.addParameter("path", getPath() + "." + getName());
+            String nodeViewUrl = urlBuilder.toString();
+            
+            Request request = new Request(nodeViewUrl, "");
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());
             HttpEntity httpEntity = response.getEntity();
             try {

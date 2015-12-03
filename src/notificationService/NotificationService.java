@@ -3,14 +3,16 @@ package notificationService;
 import codeEditor.networkLayer.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import static config.NetworkConfig.NOTIFICATIONS;
 import static config.NetworkConfig.NOTIFICATIONS_THREAD_SLEEP_TIME;
-import static config.NetworkConfig.NOTIFICATIONS_URL;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import urlbuilder.URLBuilder;
 
 public final class NotificationService extends Thread {
     private final String userId;
@@ -50,9 +52,12 @@ public final class NotificationService extends Thread {
     
     @Override
     public void run(){
-        String getMessage = NOTIFICATIONS_URL + "?userId=" + userId;
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(NOTIFICATIONS).toString();
+        urlBuilder.addParameter("userId", userId);
+        String url = urlBuilder.toString();
         while (true) {
-            handleRequest(new Request(getMessage, ""));
+            handleRequest(new Request(url, ""));
             try {
                 Thread.sleep(NOTIFICATIONS_THREAD_SLEEP_TIME);
             } catch (InterruptedException ex) {

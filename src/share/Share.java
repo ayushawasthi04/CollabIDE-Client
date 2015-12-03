@@ -5,9 +5,10 @@ import codeEditor.networkLayer.Request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import static config.NetworkConfig.GET_USERS_URL;
-import static config.NetworkConfig.SHARE_URL;
-import static config.NetworkConfig.SHARE_VIEW_URL;
+import static config.NetworkConfig.GET_USERS;
+import static config.NetworkConfig.SERVER_ADDRESS;
+import static config.NetworkConfig.SHARE;
+import static config.NetworkConfig.SHARE_VIEW;
 import exception.ConnectivityFailureException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,12 +18,17 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import projectManager.Collections;
 import projectManager.Node;
+import urlbuilder.URLBuilder;
 import utility.SendPostRequest;
 
 public class Share {
     public static ArrayList<User> getUsers() throws ConnectivityFailureException { 
-        String url = GET_USERS_URL;
-        Request request = new Request(url, "");
+        
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_USERS).toString();
+        String getUsersUrl = urlBuilder.toString();
+        
+        Request request = new Request(getUsersUrl, "");
         try {
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());        
             HttpEntity httpEntity = response.getEntity();
@@ -47,8 +53,13 @@ public class Share {
     }
     
     public static void shareWith(String userId, String projectName, ArrayList<String> shareIds) throws ConnectivityFailureException {
-        String url = SHARE_URL + "?userId=" + userId + "&docId=" + projectName + "&shareId=" + shareIds.get(0);
-        Request request = new Request(url, "");
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(SHARE).toString();
+        urlBuilder.addParameter("userId", userId);
+        urlBuilder.addParameter("shareId", shareIds.get(0));
+        
+        String shareUrl = urlBuilder.toString();
+        Request request = new Request(shareUrl, "");
         try {
             SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());        
         } catch(IOException ex) {
@@ -59,7 +70,12 @@ public class Share {
     public static ArrayList<Collections> getSharedProjects(String userId) throws ConnectivityFailureException { 
         try {
             ArrayList<Collections> node = new ArrayList<>();
-            String projectViewURL = SHARE_VIEW_URL + "?userId=" + userId;
+            
+            URLBuilder urlBuilder = new URLBuilder(); 
+            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(SHARE_VIEW).toString();
+            urlBuilder.addParameter("userId", userId);
+            
+            String projectViewURL = urlBuilder.toString();
             utility.Request request = new utility.Request(projectViewURL, "");
             HttpResponse response = codeEditor.networkLayer.SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());
             HttpEntity httpEntity = response.getEntity();

@@ -23,7 +23,8 @@ public class URLBuilder {
         return this;
     }
     
-    String getURL() {
+    @Override
+    public String toString() {
         String url = "";
         url += serverAddress;
         url += "/";

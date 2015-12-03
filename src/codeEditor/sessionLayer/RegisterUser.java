@@ -6,12 +6,14 @@ import codeEditor.networkLayer.SendPostRequest;
 import codeEditor.operation.RegisterUserOperation;
 import codeEditor.operation.userOperations.InsertOperation;
 import codeEditor.utility.RandomGen;
-import static config.NetworkConfig.REGISTER_URL;
+import static config.NetworkConfig.REGISTER;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import urlbuilder.URLBuilder;
 
 public class RegisterUser {
     private final String userId;
@@ -25,7 +27,10 @@ public class RegisterUser {
     }
     
     public final void registerUserOnDoc() {
-        String registerMessage = REGISTER_URL + "?userId=" + userId + "&docId=" + docId;
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(REGISTER).toString();
+        urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
+        String registerMessage = urlBuilder.toString();
         RegisterUserOperation registerOperation = new RegisterUserOperation(RandomGen.getRandom(), userId);
         Request registerRequest = new Request(registerMessage, registerOperation.serialize()); 
         boolean retry = true;

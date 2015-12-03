@@ -1,17 +1,15 @@
 package notificationService;
 
 import codeEditor.networkLayer.SendPostRequest;
-import static config.NetworkConfig.CLEAR_NOTIFICATION_URL;
+import static config.NetworkConfig.CLEAR_NOTIFICATION;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.ConnectivityFailureException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import notificationService.notifyObservers.NotificationObserver;
 import notificationService.notifyObservers.Notify;
 import notificationService.notifyObservers.NotificationSubject;
-import org.apache.http.HttpResponse;
-import utility.Request;
+import urlbuilder.URLBuilder;
 
 public class NotificationManager {
     private String userId;
@@ -38,7 +36,11 @@ public class NotificationManager {
     }
 
     public void clearNotifications(String userId) throws ConnectivityFailureException {
-        String url = CLEAR_NOTIFICATION_URL + "?userId=" + userId;
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(CLEAR_NOTIFICATION).toString();
+        urlBuilder.addParameter("userId", userId);
+        String url = urlBuilder.toString();
+        
         try {
             SendPostRequest.sendPostRequest(url, "");
         } catch (IOException ex) {
