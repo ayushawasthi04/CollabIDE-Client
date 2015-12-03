@@ -1,4 +1,4 @@
-package codeEditor.dataAccessLayer;
+package codeEditor.model;
 
 class Node {
     static final int maxRange = 10000; 

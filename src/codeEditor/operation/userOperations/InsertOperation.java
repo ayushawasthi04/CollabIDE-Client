@@ -13,7 +13,6 @@ public class InsertOperation extends Operation implements UserOperations {
         deserialize(json);
     }
     
-    
     public InsertOperation(String operationId, String userId, int position, char charToInsert){
         super(operationId, userId, EditOperations.INSERT);
         this.charToInsert = charToInsert;       

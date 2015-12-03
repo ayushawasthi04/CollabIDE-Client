@@ -1,6 +1,6 @@
 package config;
 
-import static config.ConfigFilePaths.NetworkConfFilePath;
+import static config.ConfigFilePaths.NETWORK_CONF_FILE_PATH;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public abstract class NetworkConfig {
     public static void getConfig(){
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream(NetworkConfFilePath));
+            properties.load(new FileInputStream(NETWORK_CONF_FILE_PATH));
             
             String SERVER_IP = properties.getProperty("SERVER_IP");
             String SERVER_PORT = properties.getProperty("SERVER_PORT");  

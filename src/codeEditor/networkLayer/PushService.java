@@ -4,17 +4,12 @@ import codeEditor.buffer.Buffer;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 
-public final class PushService extends Thread implements NetworkCallHandler{
+public final class PushService extends Thread implements NetworkHandler{
     public static boolean DO_RETRY = true;
-    
-    private final String userId;
-    private final String docId;
     
     private Buffer buffer;
     
     public PushService(String userId, String docId, Buffer buffer){    
-        this.userId = userId;
-        this.docId = docId;
         setBuffer(buffer);
     }
     
@@ -41,18 +36,17 @@ public final class PushService extends Thread implements NetworkCallHandler{
     public void handleResponse(HttpResponse response) {
     }
     
-    private volatile boolean isRunning = true;
     @Override
     public void run(){
-        while (isRunning) {
+        while (!this.isInterrupted()) {
             Request request = (Request) buffer.take();
             handleRequest(request);
         }
     }
 
     @Override
-    public void close() {
-        isRunning = false;
+    public void interrupt() {
+        this.interrupt();
     }
 
 }

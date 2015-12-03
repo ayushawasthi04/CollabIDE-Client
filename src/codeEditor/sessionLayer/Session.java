@@ -2,15 +2,15 @@ package codeEditor.sessionLayer;
 
 import codeEditor.dataControl.DataControlLayer;
 import codeEditor.dataControl.ExecuteOperationsThread;
-import codeEditor.eventNotification.NotificationInterface;
-import codeEditor.networkLayer.NetworkCallHandler;
+import codeEditor.eventNotification.NotificationSubject;
+import codeEditor.networkLayer.NetworkHandler;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
 import codeEditor.operation.userOperations.UserOperations;
 import codeEditor.transform.TransformationThread;
 import codeEditor.buffer.Buffer;
-import codeEditor.eventNotification.ObserverInterface;
+import codeEditor.eventNotification.Observer;
 import config.Configuration;
 import static config.NetworkConfig.PUSH_OPERATIONS_URL;
 import codeEditor.networkLayer.Request;
@@ -30,10 +30,10 @@ public class Session {
     private final ExecuteOperationsThread executeOperationThread;
     private final TransformationThread transformationThread;
    
-    private final NetworkCallHandler requestHandlerThread; 
-    private final NetworkCallHandler pollingServiceThread;
+    private final NetworkHandler requestHandlerThread; 
+    private final NetworkHandler pollingServiceThread;
     
-    public final NotificationInterface notificationService;
+    public final NotificationSubject notificationService;
     
     private final Buffer requestBuffer, responseBuffer, operationBuffer;
     
@@ -72,13 +72,13 @@ public class Session {
     }
     
     public void stopSession() {
-        requestHandlerThread.close();
-        pollingServiceThread.close();
-        executeOperationThread.close();
-        transformationThread.close();
+        requestHandlerThread.interrupt();
+        pollingServiceThread.interrupt();
+        executeOperationThread.interrupt();
+        transformationThread.interrupt();
     }
        
-    public void register(ObserverInterface observer) {
+    public void register(Observer observer) {
         this.notificationService.addObserver(observer);
     }
     
@@ -89,8 +89,7 @@ public class Session {
         try {
             String pushUrl = PUSH_OPERATIONS_URL + "?userId=" + userId + "&docId=" + docId;
             if (userOperation.getType() == EditOperations.INSERT){
-                System.out.println("Op pushed");
-        
+                
                 InsertOperation insertOperation = (InsertOperation) userOperation;
                 insertOperation.lastSyncStamp = Session.lastSyncStamp;
                 executeOperationThread.pushOperation((Operation) userOperation);
@@ -98,7 +97,6 @@ public class Session {
                 requestBuffer.put(new Request(pushUrl, insertOperation.serialize()));
             
             } else if (userOperation.getType() == EditOperations.ERASE){
-                System.out.println("Op pushed");
                 
                 EraseOperation eraseOperation = (EraseOperation) userOperation;
                 eraseOperation.lastSyncStamp = Session.lastSyncStamp;

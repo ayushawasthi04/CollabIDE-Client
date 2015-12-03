@@ -8,13 +8,13 @@ public final class EraseOperation extends Operation implements UserOperations {
     public int lastSyncStamp;
     public int position;
     
-    public EraseOperation(String json) {
-        this.deserialize(json);
-    }
-    
     public EraseOperation(String operationId, String userId, int position) {
         super(operationId,  userId, EditOperations.ERASE);
         this.position = position;
+    }
+    
+    public EraseOperation(String json) {
+        this.deserialize(json);
     }
     
     public EraseOperation(EraseOperation o) {
@@ -37,7 +37,7 @@ public final class EraseOperation extends Operation implements UserOperations {
         this.type = EditOperations.ERASE;
     }
     
-      public void setLastSyncStamp(int lastSyncTimeStamp) {
+    public void setLastSyncStamp(int lastSyncTimeStamp) {
         this.lastSyncStamp = lastSyncTimeStamp;
     }
 }

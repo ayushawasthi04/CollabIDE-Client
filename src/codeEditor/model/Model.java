@@ -1,4 +1,4 @@
-package codeEditor.dataAccessLayer;
+package codeEditor.model;
 
 public interface Model {
     void insert(int position, char character);

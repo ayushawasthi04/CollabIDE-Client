@@ -20,14 +20,12 @@ public class Deserializer implements JsonDeserializer<Operation>{
     public Operation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
         try {
             JsonObject jsonObject = (JsonObject) json;
-            String type = jsonObject.get("type").getAsString();
-            
+            String type = jsonObject.get("type").getAsString(); 
             Operation operation;
             switch(type) {
                 case "INSERT": operation = new InsertOperation(json.toString()); break;
                 case "ERASE": operation = new EraseOperation(json.toString());break;
                 case "REPOSITION": operation = new RepositionOperation(json.toString()); break;
-                
                 default: throw new OperationNotFound("No such Operation exists");
             }
             return operation;

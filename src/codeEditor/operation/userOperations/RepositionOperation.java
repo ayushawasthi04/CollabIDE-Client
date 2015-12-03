@@ -8,15 +8,16 @@ public class RepositionOperation extends Operation implements UserOperations {
     public int position;
     public String username;
     
-    public RepositionOperation(String json) {
-        this.deserialize(json);
-    }
-    
     public RepositionOperation(String operationId, String userId, int position, String username) {
         super(operationId,  userId, EditOperations.REPOSITION);
         this.position = position;
         this.username = username;
     }
+    
+    public RepositionOperation(String json) {
+        this.deserialize(json);
+    }
+    
     
     public RepositionOperation(RepositionOperation o) {
         super(o.operationId, o.userId, o.type);

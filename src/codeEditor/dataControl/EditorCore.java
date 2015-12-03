@@ -2,9 +2,9 @@ package codeEditor.dataControl;
 
 import codeEditor.buffer.SynchronizedBuffer;
 import codeEditor.buffer.Buffer;
-import codeEditor.dataAccessLayer.Model;
-import codeEditor.dataAccessLayer.Treap;
-import codeEditor.eventNotification.NotificationInterface;
+import codeEditor.model.Model;
+import codeEditor.model.Treap;
+import codeEditor.eventNotification.NotificationSubject;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
@@ -15,17 +15,16 @@ public class EditorCore implements DataControlLayer{
     Buffer operationBuffer = new SynchronizedBuffer();
     
     private final Model dataModel;
-    
     private final String userId;
     private final String docId;
-    private final NotificationInterface notificationService; 
     
-    public EditorCore(String userId, String docId, NotificationInterface notificationService) {
+    private final NotificationSubject notificationService; 
+    
+    public EditorCore(String userId, String docId, NotificationSubject notificationService) {
         this.userId = userId;
-        this.docId = docId;
-        
+        this.docId = docId;    
+        this.dataModel = new Treap();
         this.notificationService = notificationService;
-        dataModel = new Treap();
     }
     
     
@@ -72,6 +71,7 @@ public class EditorCore implements DataControlLayer{
                 }
             }
             if (operation.userId.equals(getUserId())) {
+                //ignore if character belong to the same user.
             } else {
                 notificationService.notifyObservers(operation);
             }

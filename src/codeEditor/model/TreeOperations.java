@@ -1,4 +1,4 @@
-package codeEditor.dataAccessLayer;
+package codeEditor.model;
 
 class TreeOperations {
     public static int getSize(Node root){

@@ -21,13 +21,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public final class PollingService extends Thread implements NetworkCallHandler{
+public final class PollService extends Thread implements NetworkHandler{
     private final String userId;
     private final String docId;
     
     private Buffer buffer;
     
-    public PollingService(String userId, String docId, Buffer buffer){    
+    public PollService(String userId, String docId, Buffer buffer){    
         this.userId = userId;
         this.docId = docId;
         setBuffer(buffer);
@@ -74,16 +74,14 @@ public final class PollingService extends Thread implements NetworkCallHandler{
         } catch (IOException | UnsupportedOperationException ex) {
             ex.printStackTrace(System.err);
         } catch (JSONException ex) {
-            Logger.getLogger(PollingService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }
-    
-    private volatile boolean isRunning = true;
     
     @Override
     public void run(){
         String getMessage = GET_OPERATIONS_URL + "?userId=" + userId + "&docId=" + docId;
-        while (isRunning) {
+        while (!this.isInterrupted()) {
             handleRequest(new Request(getMessage, ""));
             try {
                 Thread.sleep(POLLING_THREAD_SLEEP_TIME);
@@ -93,7 +91,7 @@ public final class PollingService extends Thread implements NetworkCallHandler{
     }
     
     @Override
-    public void close() {
-        isRunning = false;
+    public void interrupt() {
+        this.interrupt();
     }
 }

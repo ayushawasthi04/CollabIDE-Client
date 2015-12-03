@@ -5,7 +5,7 @@ public abstract class Operation {
     public String userId;
     public EditOperations type;
     
-    public Operation() {   
+    public Operation() {    
     }
     
     public Operation(String operationId, String userIdentifier, EditOperations type) {
