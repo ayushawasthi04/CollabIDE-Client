@@ -5,6 +5,7 @@ import codeEditor.operation.Deserializer;
 import codeEditor.buffer.Buffer;
 import codeEditor.operation.Operation;
 import codeEditor.sessionLayer.Session;
+import codeEditor.transform.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -26,12 +27,13 @@ import urlbuilder.URLBuilder;
 public final class PollService extends Thread implements NetworkHandler{
     private final String userId;
     private final String docId;
-    
+    private final Transformation tranformation;
     private Buffer buffer;
     
-    public PollService(String userId, String docId, Buffer buffer){    
+    public PollService(String userId, String docId, Buffer buffer, Transformation transformation){    
         this.userId = userId;
         this.docId = docId;
+        this.tranformation = transformation;
         setBuffer(buffer);
     }
     
@@ -59,19 +61,34 @@ public final class PollService extends Thread implements NetworkHandler{
             if (content.equals("")) {
             } else {
                 JSONObject jsonObject = new JSONObject(content);
-                Session.lastSyncStamp = (Integer) jsonObject.get("last_sync");
-                JSONArray operations = (JSONArray) jsonObject.get("operations");
+                new Thread(()->{
+                    try {
+                        try {
+                            Session.updateState.acquire();
+                            Session.lastSyncStamp = (Integer) jsonObject.get("last_sync");
+                            JSONArray operations = (JSONArray) jsonObject.get("operations");
+
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            gsonBuilder.registerTypeAdapter(Operation.class, new Deserializer());
+                            Gson gson = gsonBuilder.create();
+
+                            java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
+                            ArrayList<Operation> list = gson.fromJson(operations.toString(), listType);
+
+                            ArrayList<Operation> transformed = this.tranformation.transform(list);
+                            for (Operation o: transformed) {
+                                buffer.put(o);
+                            }
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            Session.updateState.release();
+                        }
+                    } catch (JSONException ex) {
+                        Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }).start();
                 
-                //System.out.println(lastSyncStamp);
-                //System.out.println(operations.toString());
-                
-                GsonBuilder gsonBuilder = new GsonBuilder();
-                gsonBuilder.registerTypeAdapter(Operation.class, new Deserializer());
-                Gson gson = gsonBuilder.create();
-                
-                java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
-                ArrayList<Operation> list = gson.fromJson(operations.toString(), listType);
-                buffer.put(list);
             }
         } catch (IOException | UnsupportedOperationException ex) {
             ex.printStackTrace(System.err);
@@ -82,10 +99,12 @@ public final class PollService extends Thread implements NetworkHandler{
     
     @Override
     public void run(){
+        
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_OPERATIONS);
         urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
         String getRequest = urlBuilder.toString();
+        
         while (!this.isInterrupted()) {
             handleRequest(new Request(getRequest, ""));
             try {

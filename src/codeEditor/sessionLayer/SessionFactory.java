@@ -10,13 +10,14 @@ import codeEditor.eventNotification.NotificationService;
 import codeEditor.networkLayer.NetworkHandler;
 import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
-import codeEditor.transform.TransformationThread;
+import codeEditor.transform.Transformation;
 
 public class SessionFactory extends AbstractSessionFactory{
 
     @Override
-    public NetworkHandler createPollingThread(String userIdentifier, String docIdentifier, Buffer responseBuffer) {
-         return new PollService(userIdentifier, docIdentifier, responseBuffer); 
+    public NetworkHandler createPollingThread
+        (String userIdentifier, String docIdentifier, Buffer operationBuffer, Transformation transformation) {
+         return new PollService(userIdentifier, docIdentifier, operationBuffer, transformation); 
     }
 
     @Override
@@ -34,8 +35,8 @@ public class SessionFactory extends AbstractSessionFactory{
     }
 
     @Override
-    public TransformationThread createTranformationThread(String userId, Buffer responseBuffer, Buffer operationBuffer) {
-        return new TransformationThread(userId, responseBuffer, operationBuffer);    
+    public Transformation createTranformation(String userId) {
+        return new Transformation(userId);    
     }
 
     @Override

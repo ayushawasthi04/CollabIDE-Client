@@ -1,17 +1,10 @@
 package codeEditor.transform.operationalTransform;
 
 import codeEditor.operation.Operation;
-import codeEditor.sessionLayer.Session;
-import static codeEditor.transform.TransformationThread.mutex;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CompoundOT {
-    public static ArrayList<Operation> performTransform(String userId, ArrayList<Operation> localOperations, ArrayList<Operation> remoteOperations) {
-        try {
-            mutex.acquire();
-        
+    public static ArrayList<Operation> performTransform(String userId, ArrayList<Operation> localOperations, ArrayList<Operation> remoteOperations) {    
             ArrayList<Operation> transformedOperations = new ArrayList<>();
             for (Operation remote: remoteOperations) {
                 //System.out.println("My userId : " + userId);
@@ -43,12 +36,5 @@ public class CompoundOT {
                 }
             }
             return transformedOperations;
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CompoundOT.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            mutex.release();
-        }
-        
-        return null;
     }
 }
