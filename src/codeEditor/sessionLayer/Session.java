@@ -42,7 +42,7 @@ public class Session {
     
     public static volatile int lastSynchronized;
     
-    public static Mutex updateState = new Mutex();
+    public Mutex updateState = new Mutex();
     
     public Session(String userId, String docId) {
         Configuration.getConfiguration();
@@ -60,7 +60,7 @@ public class Session {
         transformation = sessionFactory.createTranformation(userId);   
     
         requestHandlerThread = sessionFactory.createRequestHandlerThread(userId, docId, requestBuffer);
-        pollingServiceThread = sessionFactory.createPollingThread(userId, docId, operationBuffer, transformation); 
+        pollingServiceThread = sessionFactory.createPollingThread(userId, docId, operationBuffer, transformation, updateState); 
         executeOperationThread = sessionFactory.createExecuteOperationThread(editorInstance, operationBuffer);
        
         //Register the user on Doc
@@ -87,49 +87,47 @@ public class Session {
     
     @SuppressWarnings("empty-statement")
     public void pushOperation(UserOperations userOperation){
-        
         try {
-            try {
-                updateState.acquire();
-                //Spin lock to let operationBuffer go empty before any operation can be pushed.
-                while(!operationBuffer.isEmpty());
-        
-                URLBuilder urlBuilder = new URLBuilder(); 
-                urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PUSH_OPERATIONS).toString();
-                urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
-                String pushUrl = urlBuilder.toString();
+            URLBuilder urlBuilder = new URLBuilder(); 
+            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PUSH_OPERATIONS).toString();
+            urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
+            String pushUrl = urlBuilder.toString();
 
-                if (userOperation.getType() == EditOperations.INSERT){
+            if (userOperation.getType() == EditOperations.INSERT){
 
-                    InsertOperation insertOperation = (InsertOperation) userOperation;
-                    insertOperation.lastSyncStamp = Session.lastSynchronized;
-                    executeOperationThread.pushOperation((Operation) userOperation);
-                    transformation.addOperation(insertOperation);
-                    requestBuffer.put(new Request(pushUrl, insertOperation.serialize()));
+                InsertOperation insertOperation = (InsertOperation) userOperation;
+                insertOperation.lastSyncStamp = Session.lastSynchronized;
+                executeOperationThread.pushOperation((Operation) userOperation);
+                transformation.addOperation(insertOperation);
+                requestBuffer.put(new Request(pushUrl, insertOperation.serialize()));
 
-                } else if (userOperation.getType() == EditOperations.ERASE){
+            } else if (userOperation.getType() == EditOperations.ERASE){
 
-                    EraseOperation eraseOperation = (EraseOperation) userOperation;
-                    eraseOperation.lastSyncStamp = Session.lastSynchronized;
-                    executeOperationThread.pushOperation((Operation) userOperation);
-                    transformation.addOperation(eraseOperation);
-                    requestBuffer.put(new Request(pushUrl, eraseOperation.serialize()));    
+                EraseOperation eraseOperation = (EraseOperation) userOperation;
+                eraseOperation.lastSyncStamp = Session.lastSynchronized;
+                executeOperationThread.pushOperation((Operation) userOperation);
+                transformation.addOperation(eraseOperation);
+                requestBuffer.put(new Request(pushUrl, eraseOperation.serialize()));    
 
-                } else if (userOperation.getType() == EditOperations.REPOSITION) {
+            } else if (userOperation.getType() == EditOperations.REPOSITION) {
 
-                    RepositionOperation repositionOperation = (RepositionOperation) userOperation;
-                    requestBuffer.put(new Request(pushUrl, repositionOperation.serialize()));    
+                RepositionOperation repositionOperation = (RepositionOperation) userOperation;
+                requestBuffer.put(new Request(pushUrl, repositionOperation.serialize()));    
 
-                } else {
-                    throw new OperationNotExistException("Operation Doesnot Exist.");
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                updateState.release();
-            }
+            } else {
+                throw new OperationNotExistException("Operation Doesnot Exist.");
+            }      
         } catch (OperationNotExistException ex) {
             Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void lock() throws InterruptedException {
+        while (!operationBuffer.isEmpty());
+        updateState.acquire();
+    }
+    
+    public void unlock() {
+        updateState.release();
     }
 }

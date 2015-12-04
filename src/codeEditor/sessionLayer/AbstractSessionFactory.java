@@ -7,6 +7,7 @@ import codeEditor.transform.Transformation;
 import codeEditor.buffer.Buffer;
 import codeEditor.eventNotification.NotificationSubject;
 import codeEditor.eventNotification.NotificationService;
+import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 
 public abstract class AbstractSessionFactory {
    
@@ -15,7 +16,7 @@ public abstract class AbstractSessionFactory {
     public abstract NotificationService createNotificationService();
     
     public abstract NetworkHandler createPollingThread
-        (String userId, String docId, Buffer responseBuffer, Transformation transformation);
+        (String userId, String docId, Buffer responseBuffer, Transformation transformation, Mutex updateState);
     
     public abstract NetworkHandler createRequestHandlerThread
         (String userId, String docId, Buffer requestBuffer);

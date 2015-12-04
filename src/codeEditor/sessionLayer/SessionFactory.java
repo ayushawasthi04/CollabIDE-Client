@@ -11,13 +11,14 @@ import codeEditor.networkLayer.NetworkHandler;
 import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
 import codeEditor.transform.Transformation;
+import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 
 public class SessionFactory extends AbstractSessionFactory{
 
     @Override
     public NetworkHandler createPollingThread
-        (String userIdentifier, String docIdentifier, Buffer operationBuffer, Transformation transformation) {
-         return new PollService(userIdentifier, docIdentifier, operationBuffer, transformation); 
+        (String userIdentifier, String docIdentifier, Buffer operationBuffer, Transformation transformation, Mutex updateState) {
+         return new PollService(userIdentifier, docIdentifier, operationBuffer, transformation, updateState); 
     }
 
     @Override

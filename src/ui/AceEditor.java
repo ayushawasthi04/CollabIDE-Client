@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -240,53 +242,51 @@ public class AceEditor extends Region implements NotificationObserver {
     }
 
     public void notifyTextChange(String json, int start, int end) {
-        //webEngine.executeScript("removeAllMarkers()");
-        //webEngine.executeScript("addMarker(\"Ashish\", \"#7DC4E8\", 60)");
+        try {
+            session.lock();
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            TextChange change = gson.fromJson(json, TextChange.class);
+            if ("remove".equals(change.action)) {
+                int size = 0;
+                for (int i = 0; i < change.lines.size(); i++) {
+                    String line = change.lines.get(i);
+                    size += line.length();
+                    if (i + 1 < change.lines.size()) {
+                        size++;
+                    }
+                }
+                end = start + size;
 
-        //System.out.println("start end " + start + " " + end);
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-
-        TextChange change = gson.fromJson(json, TextChange.class);
-
-        if ("remove".equals(change.action)) {
-            int size = 0;
+                for (int i = end - 1; i >= start; i--) {
+                    EraseOperation eraseOperation = new EraseOperation(RandomGenerator.getRandom(), userIdentifier, i);
+                    session.pushOperation(eraseOperation);
+                }
+                return;
+            }
+            if (change.lines.isEmpty()) {
+                return;
+            }
+            int ind = start;
             for (int i = 0; i < change.lines.size(); i++) {
-                String line = change.lines.get(i);
-                size += line.length();
+                for (int j = 0; j < change.lines.get(i).length(); j++) {
+                    char c = change.lines.get(i).charAt(j);
+
+                    InsertOperation insertOperation = new InsertOperation(RandomGenerator.getRandom(), userIdentifier, ind++, c);
+                    session.pushOperation(insertOperation);
+                }
+
                 if (i + 1 < change.lines.size()) {
-                    size++;
+                    InsertOperation insertOperation = new InsertOperation(RandomGenerator.getRandom(), userIdentifier, ind++, '\n');
+                    session.pushOperation(insertOperation);
                 }
             }
-            end = start + size;
-
-            for (int i = end - 1; i >= start; i--) {
-                EraseOperation eraseOperation = new EraseOperation(RandomGenerator.getRandom(), userIdentifier, i);
-                session.pushOperation(eraseOperation);
-            }
-            return;
+        
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AceEditor.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            session.unlock();
         }
-
-        //System.out.println("lines size " + change.lines.size());
-        if (change.lines.isEmpty()) {
-            return;
-        }
-
-        int ind = start;
-        for (int i = 0; i < change.lines.size(); i++) {
-            for (int j = 0; j < change.lines.get(i).length(); j++) {
-                char c = change.lines.get(i).charAt(j);
-
-                InsertOperation insertOperation = new InsertOperation(RandomGenerator.getRandom(), userIdentifier, ind++, c);
-                session.pushOperation(insertOperation);
-            }
-
-            if (i + 1 < change.lines.size()) {
-                InsertOperation insertOperation = new InsertOperation(RandomGenerator.getRandom(), userIdentifier, ind++, '\n');
-                session.pushOperation(insertOperation);
-            }
-        }
-
     }
 
     private String encodeString(String content) {

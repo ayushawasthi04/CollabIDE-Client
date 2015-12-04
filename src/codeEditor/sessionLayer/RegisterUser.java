@@ -31,6 +31,7 @@ public class RegisterUser {
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(REGISTER).toString();
         urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
         String registerMessage = urlBuilder.toString();
+        
         RegisterUserOperation registerOperation = new RegisterUserOperation(RandomGen.getRandom(), userId);
         Request registerRequest = new Request(registerMessage, registerOperation.serialize()); 
         boolean retry = true;

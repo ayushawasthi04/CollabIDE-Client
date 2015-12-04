@@ -9,6 +9,7 @@ import codeEditor.transform.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 import static config.NetworkConfig.GET_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
@@ -29,11 +30,13 @@ public final class PollService extends Thread implements NetworkHandler{
     private final String docId;
     private final Transformation tranformation;
     private Buffer buffer;
+    private final Mutex updateState;
     
-    public PollService(String userId, String docId, Buffer buffer, Transformation transformation){    
+    public PollService(String userId, String docId, Buffer buffer, Transformation transformation, Mutex updateState){    
         this.userId = userId;
         this.docId = docId;
         this.tranformation = transformation;
+        this.updateState = updateState;
         setBuffer(buffer);
     }
     
@@ -64,7 +67,7 @@ public final class PollService extends Thread implements NetworkHandler{
                 new Thread(()->{
                     try {
                         try {
-                            Session.updateState.acquire();
+                            this.updateState.acquire();
                             Session.lastSynchronized = (Integer) jsonObject.get("last_sync");
                             JSONArray operations = (JSONArray) jsonObject.get("operations");
 
@@ -82,7 +85,7 @@ public final class PollService extends Thread implements NetworkHandler{
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
                         } finally {
-                            Session.updateState.release();
+                            this.updateState.release();
                         }
                     } catch (JSONException ex) {
                         Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
