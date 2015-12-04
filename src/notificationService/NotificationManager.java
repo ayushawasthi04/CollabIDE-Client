@@ -13,9 +13,10 @@ import urlbuilder.URLBuilder;
 
 public class NotificationManager {
     private final String userId;
-    ArrayList<Notification> notificationPool = new ArrayList<>();
+    public ArrayList<Notification> notificationPool = new ArrayList<>();
+    
     NotificationSubject notify = new Notify();
-    NotificationService  notificationService;
+    NotificationService notificationService;
     
     public NotificationManager(String userId) {
         this.userId = userId;
@@ -36,6 +37,7 @@ public class NotificationManager {
     }
 
     public void clearNotifications() throws ConnectivityFailureException {
+        
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(CLEAR_NOTIFICATION).toString();
         urlBuilder.addParameter("userId", userId);

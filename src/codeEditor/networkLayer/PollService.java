@@ -65,7 +65,7 @@ public final class PollService extends Thread implements NetworkHandler{
                     try {
                         try {
                             Session.updateState.acquire();
-                            Session.lastSyncStamp = (Integer) jsonObject.get("last_sync");
+                            Session.lastSynchronized = (Integer) jsonObject.get("last_sync");
                             JSONArray operations = (JSONArray) jsonObject.get("operations");
 
                             GsonBuilder gsonBuilder = new GsonBuilder();

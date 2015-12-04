@@ -13,15 +13,17 @@ public class Request {
         return requestUrl;
     }
 
-    public void setRequestUrl(String requestUrl) {
+    public Request setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
+        return this;
     }
 
     public String getSerializedRequest() {
         return serializedRequest;
     }
 
-    public void setSerializedRequest(String serializedRequest) {
+    public Request setSerializedRequest(String serializedRequest) {
         this.serializedRequest = serializedRequest;
+        return this;
     }
 }

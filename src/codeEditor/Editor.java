@@ -11,7 +11,7 @@ import share.Share;
 
 public class Editor {
     public static void main(String[] args) throws JSONException, ConnectivityFailureException {
-        ArrayList<Collections> collectionList = Share.getSharedProjects("abcdef");
+        //ArrayList<Collections> collectionList = Share.getSharedProjects("abcdef");
         
         /*Execute e = new Execute();
         e.execute();*/

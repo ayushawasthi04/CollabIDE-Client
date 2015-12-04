@@ -100,21 +100,22 @@ public class Collections extends Node {
         return null;
     }
     
+    
     @Override
-    public int hashCode() {
-        return 1;
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        } else if (getClass() != object.getClass()) {
+            return false;
+        } else {
+            final Collections other = (Collections) object;
+            return (this.getPath() + this.getName()).equals(other.getPath() + other.getName());
+        }
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Collections other = (Collections) obj;
-        
-        return (this.getPath() + this.getName()).equals(other.getPath() + other.getName());
+    public int hashCode() {
+        int hash = 3;
+        return hash;
     }
 }

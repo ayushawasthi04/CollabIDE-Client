@@ -2,11 +2,8 @@ package compile;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 
-/**
- *
- * @author dikshant
- */
 public class Compiler {
 
     private String filePath;
@@ -35,12 +32,8 @@ public class Compiler {
             r.exec("cmd /c del " + getFilePath() + "\\" + "a.exe");
             Process compile = Runtime.getRuntime().exec("cmd /c g++ " + getFilePath() + "\\" + getFileName());
             compile.waitFor();
-            if (compile.exitValue() == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
+            return compile.exitValue() == 0;
+        } catch (IOException | InterruptedException e) {
             System.out.println("Exception : " + e);
         }
         return false;
@@ -57,7 +50,7 @@ public class Compiler {
             Process p = r.exec("cmd /c start /wait out1.bat");
             p.waitFor();
             r.exec("cmd /c del out1.bat");
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("Exception : " + e);
         }
     }
@@ -75,7 +68,7 @@ public class Compiler {
             r.exec("cmd /c del out1.bat");
             r.exec("cmd /c del out2.bat");
             r.exec("cmd /c del a.exe");
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("Exception : " + e);
         }
     }
@@ -97,16 +90,3 @@ public class Compiler {
     }
 
 }
-/*
-public class Compile {
-
-    public static void main(String[] args) {
-        Compiler c = new Compiler();
-        String path = "C:\\Users\\dikshant\\Documents\\NetBeansProjects\\Compile\\tmp";
-        String fileName = "a.c";
-        c.setFilePath(path);
-        c.setFileName(fileName);
-        c.compile();
-    }
-}
-*/

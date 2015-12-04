@@ -54,7 +54,7 @@ public class URLBuilder {
             }
         }
         
-        System.err.println(url);
+        //System.err.println(url);
         return url;
     }
 }
