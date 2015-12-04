@@ -2,6 +2,6 @@ package codeEditor.eventNotification;
 
 import codeEditor.operation.Operation;
 
-public interface Observer {
+public interface NotificationObserver {
     void notifyObserver(Operation operation);
 }

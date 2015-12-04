@@ -2,7 +2,7 @@ package codeEditor.sessionLayer;
 
 import codeEditor.buffer.SynchronizedBuffer;
 import codeEditor.buffer.Buffer;
-import codeEditor.dataControl.DataControlLayer;
+import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.EditorCore;
 import codeEditor.dataControl.ExecuteOperationsThread;
 import codeEditor.eventNotification.NotificationSubject;
@@ -24,7 +24,7 @@ public class SessionFactory extends AbstractSessionFactory{
         return  new PushService(userId, docId, requestBuffer); 
     }
     @Override
-    public DataControlLayer createEditorInstance(String userId, String docId, NotificationSubject notificationService) {
+    public Editor createEditorInstance(String userId, String docId, NotificationSubject notificationService) {
         return new EditorCore(userId, docId, notificationService);
     }
 
@@ -44,7 +44,7 @@ public class SessionFactory extends AbstractSessionFactory{
     }
 
     @Override
-    public ExecuteOperationsThread createExecuteOperationThread(DataControlLayer editorCore, Buffer operationBuffer) {
+    public ExecuteOperationsThread createExecuteOperationThread(Editor editorCore, Buffer operationBuffer) {
         return new ExecuteOperationsThread(editorCore, operationBuffer);
     }
     

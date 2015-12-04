@@ -10,7 +10,7 @@ import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
 import exception.OperationNotExistException;
 
-public class EditorCore implements DataControlLayer{
+public class EditorCore implements Editor{
     
     Buffer operationBuffer = new SynchronizedBuffer();
     
@@ -27,17 +27,11 @@ public class EditorCore implements DataControlLayer{
         this.notificationService = notificationService;
     }
     
-    
-    @Override
-    public String getUserId() {
-        return userId;
-    }
-   
-    private void insertCharacter(String userId, int positionToInsert, char character) {
+    private void insertCharacter(int positionToInsert, char character) {
         dataModel.insert(positionToInsert, character);
     }
 
-    private void eraseCharacter(String userId, int positionToErase) {
+    private void eraseCharacter(int positionToErase) {
         dataModel.erase(positionToErase);
     }
     
@@ -58,11 +52,11 @@ public class EditorCore implements DataControlLayer{
             switch(operation.getType().toString()) {
                 case "INSERT":{
                     InsertOperation insertOperation = (InsertOperation) operation;
-                    this.insertCharacter(insertOperation.userId, insertOperation.position, insertOperation.charToInsert);   
+                    this.insertCharacter(insertOperation.position, insertOperation.charToInsert);   
                 } break;
                 case "ERASE": {
                     EraseOperation eraseOperation = (EraseOperation) operation;
-                    this.eraseCharacter(eraseOperation.userId, eraseOperation.position);
+                    this.eraseCharacter(eraseOperation.position);
                 } break;
                 case "REPOSITION": {
                 } break;    
@@ -70,7 +64,7 @@ public class EditorCore implements DataControlLayer{
                     throw new OperationNotExistException("Operation doesnot Exist.");
                 }
             }
-            if (operation.userId.equals(getUserId())) {
+            if (operation.userId.equals(this.userId)) {
                 //ignore if character belong to the same user.
             } else {
                 notificationService.notifyObservers(operation);

@@ -40,10 +40,12 @@ public class RegisterUser {
                 HttpEntity httpEntity = response.getEntity();
                 InputStream inStream = httpEntity.getContent();
                 String content = IOUtils.toString(inStream);
+                //
                 content = content.replaceAll("\r\n", "\n");
                 for (int i = 0; i < content.length(); i++) {
                     executeOperationThread.pushOperation(new InsertOperation(RandomGen.getRandom(), "0", i, content.charAt(i)));
                 }
+                //
                 retry = false;
             } catch (IOException | UnsupportedOperationException ex) {
                 System.err.println("Unable to send HTTP request. Connection Refused. Retrying...");

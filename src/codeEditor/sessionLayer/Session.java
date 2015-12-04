@@ -1,6 +1,6 @@
 package codeEditor.sessionLayer;
 
-import codeEditor.dataControl.DataControlLayer;
+import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.ExecuteOperationsThread;
 import codeEditor.eventNotification.NotificationSubject;
 import codeEditor.networkLayer.NetworkHandler;
@@ -10,7 +10,7 @@ import codeEditor.operation.userOperations.InsertOperation;
 import codeEditor.operation.userOperations.UserOperations;
 import codeEditor.transform.TransformationThread;
 import codeEditor.buffer.Buffer;
-import codeEditor.eventNotification.Observer;
+import codeEditor.eventNotification.NotificationObserver;
 import config.Configuration;
 import codeEditor.networkLayer.Request;
 import codeEditor.operation.EditOperations;
@@ -28,7 +28,7 @@ public class Session {
     private final String docId;
     private final String userId;
     
-    public final DataControlLayer editorInstance;
+    public final Editor editorInstance;
     
     private final ExecuteOperationsThread executeOperationThread;
     private final TransformationThread transformationThread;
@@ -81,7 +81,7 @@ public class Session {
         transformationThread.interrupt();
     }
        
-    public void register(Observer observer) {
+    public void register(NotificationObserver observer) {
         this.notificationService.addObserver(observer);
     }
     

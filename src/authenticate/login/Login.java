@@ -52,8 +52,10 @@ public class Login {
     
     private static User getUser(String username, String password) throws ConnectivityFailureException { 
         LoginInfo info = new LoginInfo(username, password);
+        
         URLBuilder urlBuilder = new URLBuilder(); 
         String url = urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_USERINFO).toString();
+        
         Request request = new Request(url, info.serialize());
         try {
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());        
@@ -64,6 +66,7 @@ public class Login {
 
                 Gson gson = new Gson();
                 User user = gson.fromJson(content, User.class);
+                
                 return user;
             } catch (IOException | UnsupportedOperationException ex) {
                 ex.printStackTrace(System.err);

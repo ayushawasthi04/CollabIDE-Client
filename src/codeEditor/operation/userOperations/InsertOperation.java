@@ -26,7 +26,7 @@ public class InsertOperation extends Operation implements UserOperations {
     }
     
     @Override
-    public String serialize() {
+    public final String serialize() {
         return new Gson().toJson(this);
     }
     

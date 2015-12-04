@@ -35,7 +35,7 @@ public class NotificationManager {
         notify.notifyObservers(notifications);
     }
 
-    public void clearNotifications(String userId) throws ConnectivityFailureException {
+    public void clearNotifications() throws ConnectivityFailureException {
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(CLEAR_NOTIFICATION).toString();
         urlBuilder.addParameter("userId", userId);
@@ -45,8 +45,7 @@ public class NotificationManager {
             SendPostRequest.sendPostRequest(url, "");
         } catch (IOException ex) {
             throw new ConnectivityFailureException("Unable to Connect");
-        }
-        
+        }    
     }
 
 }

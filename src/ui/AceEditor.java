@@ -4,7 +4,7 @@ import ui.util.GlobalSettings;
 import ui.util.Work;
 import ui.util.RandomGenerator;
 import authenticate.entities.User;
-import codeEditor.eventNotification.Observer;
+import codeEditor.eventNotification.NotificationObserver;
 import codeEditor.operation.EditOperations;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
@@ -45,7 +45,7 @@ import javafx.util.Duration;
 import netscape.javascript.JSObject;
 import ui.nodes.DocumentTab;
 
-public class AceEditor extends Region implements Observer {
+public class AceEditor extends Region implements NotificationObserver {
 
     private static final Queue<AceEditor> pool = new LinkedList<>();
 

@@ -25,7 +25,7 @@ public class Share {
     public static ArrayList<User> getUsers() throws ConnectivityFailureException { 
         
         URLBuilder urlBuilder = new URLBuilder(); 
-        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_USERS).toString();
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_USERS);
         String getUsersUrl = urlBuilder.toString();
         
         Request request = new Request(getUsersUrl, "");
@@ -35,13 +35,11 @@ public class Share {
             try {
                 InputStream inStream = httpEntity.getContent();
                 String content = IOUtils.toString(inStream);
-                System.out.println(content);
+                
                 Gson gson = new Gson();
                 java.lang.reflect.Type listType = new TypeToken<ArrayList<User>>() {}.getType();
                 ArrayList<User> userList = gson.fromJson(content, listType);
-                for (User user: userList) {
-                    System.out.println(user.getUsername());
-                }
+                
                 return userList;
             } catch (UnsupportedOperationException ex) {
                 ex.printStackTrace(System.err);

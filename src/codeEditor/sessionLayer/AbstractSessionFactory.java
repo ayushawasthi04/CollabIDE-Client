@@ -1,6 +1,6 @@
 package codeEditor.sessionLayer;
 
-import codeEditor.dataControl.DataControlLayer;
+import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.ExecuteOperationsThread;
 import codeEditor.networkLayer.NetworkHandler;
 import codeEditor.transform.TransformationThread;
@@ -15,10 +15,10 @@ public abstract class AbstractSessionFactory {
         (String userId, String docId, Buffer responseBuffer);
     public abstract NetworkHandler createRequestHandlerThread
         (String userId, String docId, Buffer requestBuffer);
-    public abstract DataControlLayer createEditorInstance
+    public abstract Editor createEditorInstance
         (String userId, String docId, NotificationSubject notificationService);
     public abstract TransformationThread createTranformationThread
         (String userId, Buffer responseBuffer, Buffer operationBuffer);
     public abstract ExecuteOperationsThread createExecuteOperationThread
-        (DataControlLayer editorCore, Buffer operationBuffer);
+        (Editor editorCore, Buffer operationBuffer);
 }

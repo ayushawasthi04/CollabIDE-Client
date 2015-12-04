@@ -5,16 +5,16 @@ import java.util.ArrayList;
 
 public class NotificationService implements NotificationSubject{
     
-    ArrayList<Observer> observerList = new ArrayList<>();  
+    ArrayList<NotificationObserver> observerList = new ArrayList<>();  
     
     @Override
-    public void addObserver(Observer observer) {
+    public void addObserver(NotificationObserver observer) {
         observerList.add(observer);
     }
 
     @Override
     public void notifyObservers(Operation operation) {
-        for (Observer observer: observerList) {
+        for (NotificationObserver observer: observerList) {
             observer.notifyObserver(operation);
         }
     }

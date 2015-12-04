@@ -9,10 +9,10 @@ interface ExecuteOperations {
 }
 
 public class ExecuteOperationsThread extends Thread{
-    DataControlLayer editorCore;
+    Editor editorCore;
     Buffer operationBuffer;
     
-    public ExecuteOperationsThread(DataControlLayer editorCore, Buffer operationBuffer) {
+    public ExecuteOperationsThread(Editor editorCore, Buffer operationBuffer) {
         this.editorCore = editorCore;
         this.operationBuffer = operationBuffer; 
     }
@@ -21,10 +21,9 @@ public class ExecuteOperationsThread extends Thread{
         operationBuffer.put(operation);
     }
     
-    private volatile boolean isRunning = true;
     @Override
     public void run() {
-        while (isRunning) {
+        while (!this.isInterrupted()) {
             try {
                 Operation operation = (Operation) operationBuffer.take();
                 if (operation != null) {
@@ -38,7 +37,8 @@ public class ExecuteOperationsThread extends Thread{
         }
     }
     
-    public void close() {
-        isRunning = false;
+    @Override
+    public void interrupt() {
+        this.interrupt();
     }
 }

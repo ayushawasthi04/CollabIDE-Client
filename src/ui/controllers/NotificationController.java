@@ -75,7 +75,7 @@ public class NotificationController implements Initializable, NotificationObserv
 
         new Thread(() -> {
             try {
-                notiManager.clearNotifications(user.getUserIdentifier());
+                notiManager.clearNotifications();
             } catch (ConnectivityFailureException ex) {
                 Message.showError("Clear Notification Error", ex.getMessage());
                 Logger.getLogger(NotificationController.class.getName()).log(Level.SEVERE, null, ex);
