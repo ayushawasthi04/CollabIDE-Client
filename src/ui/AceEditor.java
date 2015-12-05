@@ -174,7 +174,7 @@ public class AceEditor extends Region implements NotificationObserver {
         Work work = () -> {
             this.session = session;
             //session = new Session("user1", "abcd");
-            session.notificationService.addObserver(AceEditor.this);
+            session.register(AceEditor.this);
             userIdentifier = session.startSession();
 
             if (cursorSender != null) {

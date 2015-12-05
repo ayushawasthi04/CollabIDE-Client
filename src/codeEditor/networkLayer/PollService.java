@@ -9,7 +9,6 @@ import codeEditor.transform.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 import static config.NetworkConfig.GET_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
@@ -30,14 +29,14 @@ public final class PollService extends Thread implements NetworkHandler{
     private final String docId;
     private final Transformation tranformation;
     private Buffer buffer;
-    private final Mutex updateState;
+    private final Session session;
     
-    public PollService(String userId, String docId, Buffer buffer, Transformation transformation, Mutex updateState){    
+    public PollService(String userId, String docId, Buffer buffer, Transformation transformation, Session session){    
         this.userId = userId;
         this.docId = docId;
         this.tranformation = transformation;
-        this.updateState = updateState;
-        setBuffer(buffer);
+        this.session = session;
+        this.buffer = buffer;
     }
     
     @Override
@@ -67,8 +66,8 @@ public final class PollService extends Thread implements NetworkHandler{
                 new Thread(()->{
                     try {
                         try {
-                            this.updateState.acquire();
-                            Session.lastSynchronized = (Integer) jsonObject.get("last_sync");
+                            session.lock();
+                            session.setLastSynchronized((Integer) jsonObject.get("last_sync"));
                             JSONArray operations = (JSONArray) jsonObject.get("operations");
 
                             GsonBuilder gsonBuilder = new GsonBuilder();
@@ -85,7 +84,7 @@ public final class PollService extends Thread implements NetworkHandler{
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
                         } finally {
-                            this.updateState.release();
+                            session.unlock();
                         }
                     } catch (JSONException ex) {
                         Logger.getLogger(PollService.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,8 +100,7 @@ public final class PollService extends Thread implements NetworkHandler{
     }
     
     @Override
-    public void run(){
-        
+    public void run(){ 
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_OPERATIONS);
         urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
@@ -115,10 +113,5 @@ public final class PollService extends Thread implements NetworkHandler{
             } catch (InterruptedException ex) {
             }
         }
-    }
-    
-    @Override
-    public void interrupt() {
-        this.interrupt();
     }
 }

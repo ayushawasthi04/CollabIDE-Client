@@ -30,19 +30,19 @@ public class Session {
     
     public final Editor editorInstance;
     
+    private final Buffer requestBuffer, operationBuffer;
+   
     private final ExecuteOperationsThread executeOperationThread;
     private final Transformation transformation;
    
     private final NetworkHandler requestHandlerThread; 
     private final NetworkHandler pollingServiceThread;
     
-    public final NotificationSubject notificationService;
+    private final NotificationSubject notificationService;
     
-    private final Buffer requestBuffer, operationBuffer;
+    private volatile int lastSynchronized;
     
-    public static volatile int lastSynchronized;
-    
-    public Mutex updateState = new Mutex();
+    private final Mutex updateState = new Mutex();
     
     public Session(String userId, String docId) {
         Configuration.getConfiguration();
@@ -60,7 +60,7 @@ public class Session {
         transformation = sessionFactory.createTranformation(userId);   
     
         requestHandlerThread = sessionFactory.createRequestHandlerThread(userId, docId, requestBuffer);
-        pollingServiceThread = sessionFactory.createPollingThread(userId, docId, operationBuffer, transformation, updateState); 
+        pollingServiceThread = sessionFactory.createPollingThread(userId, docId, operationBuffer, transformation, this); 
         executeOperationThread = sessionFactory.createExecuteOperationThread(editorInstance, operationBuffer);
        
         //Register the user on Doc
@@ -96,7 +96,7 @@ public class Session {
             if (userOperation.getType() == EditOperations.INSERT){
 
                 InsertOperation insertOperation = (InsertOperation) userOperation;
-                insertOperation.lastSyncStamp = Session.lastSynchronized;
+                insertOperation.lastSyncStamp = this.getLastSynchronized();
                 executeOperationThread.pushOperation((Operation) userOperation);
                 transformation.addOperation(insertOperation);
                 requestBuffer.put(new Request(pushUrl, insertOperation.serialize()));
@@ -104,7 +104,7 @@ public class Session {
             } else if (userOperation.getType() == EditOperations.ERASE){
 
                 EraseOperation eraseOperation = (EraseOperation) userOperation;
-                eraseOperation.lastSyncStamp = Session.lastSynchronized;
+                eraseOperation.lastSyncStamp = this.getLastSynchronized();
                 executeOperationThread.pushOperation((Operation) userOperation);
                 transformation.addOperation(eraseOperation);
                 requestBuffer.put(new Request(pushUrl, eraseOperation.serialize()));    
@@ -129,5 +129,19 @@ public class Session {
     
     public void unlock() {
         updateState.release();
+    }
+
+    /**
+     * @return the lastSynchronized
+     */
+    public int getLastSynchronized() {
+        return lastSynchronized;
+    }
+
+    /**
+     * @param lastSynchronized the lastSynchronized to set
+     */
+    public void setLastSynchronized(int lastSynchronized) {
+        this.lastSynchronized = lastSynchronized;
     }
 }

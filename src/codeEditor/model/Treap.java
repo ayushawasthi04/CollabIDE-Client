@@ -164,6 +164,15 @@ public class Treap implements Model{
     }
     
     @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder("");
+        for (int i = 0; i < getSize(); i++) {
+            s.append(charAt(i));
+        }
+        return s.toString();
+    }
+    
+    @Override
     public void getTree() {
         getTree(root);
     }

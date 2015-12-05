@@ -36,9 +36,4 @@ public class ExecuteOperationsThread extends Thread{
             }
         }
     }
-    
-    @Override
-    public void interrupt() {
-        this.interrupt();
-    }
 }

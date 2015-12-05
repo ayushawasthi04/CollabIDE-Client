@@ -43,10 +43,4 @@ public final class PushService extends Thread implements NetworkHandler{
             handleRequest(request);
         }
     }
-
-    @Override
-    public void interrupt() {
-        this.interrupt();
-    }
-
 }

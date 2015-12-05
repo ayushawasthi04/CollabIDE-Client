@@ -16,7 +16,7 @@ public abstract class AbstractSessionFactory {
     public abstract NotificationService createNotificationService();
     
     public abstract NetworkHandler createPollingThread
-        (String userId, String docId, Buffer responseBuffer, Transformation transformation, Mutex updateState);
+        (String userId, String docId, Buffer responseBuffer, Transformation transformation, Session session);
     
     public abstract NetworkHandler createRequestHandlerThread
         (String userId, String docId, Buffer requestBuffer);

@@ -25,7 +25,6 @@ public final class NotificationService extends Thread {
     
     public void handleRequest(Request request) {
         try {
-            //System.out.println("Request Send");
             HttpResponse response = SendPostRequest.sendPostRequest(request.getRequestUrl(), request.getSerializedRequest());    
             handleResponse(response);
         } catch (IOException e) {
