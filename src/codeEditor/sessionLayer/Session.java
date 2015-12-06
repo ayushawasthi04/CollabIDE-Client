@@ -26,17 +26,17 @@ public class Session extends AbstractSession {
         insertOperation.lastSyncStamp = this.getLastSynchronized();
         executor.pushOperation((Operation) insertOperation);
         transformation.addOperation(insertOperation);
-        requestBuffer.put(new Request(getPushUrl(), insertOperation.serialize()));
+        pushBuffer.put(new Request(getPushUrl(), insertOperation.serialize()));
     }
     
     public void pushOperation(EraseOperation eraseOperation) {
         eraseOperation.lastSyncStamp = this.getLastSynchronized();
         executor.pushOperation((Operation) eraseOperation);
         transformation.addOperation(eraseOperation);
-        requestBuffer.put(new Request(getPushUrl(), eraseOperation.serialize()));    
+        pushBuffer.put(new Request(getPushUrl(), eraseOperation.serialize()));    
     }
     
     public void pushOperation(RepositionOperation repositionOperation) {
-        requestBuffer.put(new Request(getPushUrl(), repositionOperation.serialize()));    
+        pushBuffer.put(new Request(getPushUrl(), repositionOperation.serialize()));    
     }
 }

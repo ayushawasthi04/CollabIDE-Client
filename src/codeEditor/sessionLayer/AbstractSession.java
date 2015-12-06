@@ -21,8 +21,8 @@ public abstract class AbstractSession {
     
     protected final Editor model;
     
-    protected final Buffer requestBuffer;
-    protected final Buffer operationBuffer;
+    protected final Buffer pushBuffer;
+    protected final Buffer executeBuffer;
    
     protected final Executor executor;
     
@@ -45,17 +45,17 @@ public abstract class AbstractSession {
 
         eventNotification = sessionFactory.createNotificationService();
         model = sessionFactory.createEditorInstance(userId, docId, eventNotification);
-        requestBuffer = sessionFactory.createBuffer();
-        operationBuffer = sessionFactory.createBuffer();
+        pushBuffer = sessionFactory.createBuffer();
+        executeBuffer = sessionFactory.createBuffer();
         transformation = sessionFactory.createTranformation(userId);
-        pushService = sessionFactory.createPushService(userId, docId, requestBuffer);
+        pushService = sessionFactory.createPushService(userId, docId, pushBuffer);
         pollService = sessionFactory.createPollService()
                     .setUserId(userId)
                     .setDocId(docId)
-                    .setBuffer(operationBuffer)
+                    .setBuffer(executeBuffer)
                     .setTranformation(transformation)
                     .setSession(this);
-        executor = sessionFactory.createExecutor(model, operationBuffer);
+        executor = sessionFactory.createExecutor(model, executeBuffer);
     }
     
     //Starts and Stops the session
@@ -95,7 +95,7 @@ public abstract class AbstractSession {
     //Lock and Unlock Session
     public void lock() throws InterruptedException {
         //flushes the operation buffer
-        while (!operationBuffer.isEmpty());
+        while (!executeBuffer.isEmpty());
         
         //guarantees that the no operation is done on session untile the session is unlocked again 
         updateState.lock();
