@@ -1,17 +1,12 @@
 package codeEditor.sessionLayer;
 
 import codeEditor.networkLayer.Request;
-import codeEditor.operation.EditOperations;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
 import codeEditor.operation.userOperations.RepositionOperation;
-import codeEditor.operation.userOperations.UserOperations;
 import static config.NetworkConfig.PUSH_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
-import exception.OperationNotExistException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import urlbuilder.URLBuilder;
 
 public class Session extends AbstractSession {

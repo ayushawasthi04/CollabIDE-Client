@@ -58,13 +58,13 @@ public abstract class AbstractSession {
     
     //Starts and Stops the session
     public String startSession() {
-        requestHandlerThread.start();
-        pollingServiceThread.start();
-        executeOperationThread.start();
-        
         //Register the user on Doc
         new RegisterUser(userId, docId, executeOperationThread).registerUserOnDoc();
   
+        requestHandlerThread.start();
+        pollingServiceThread.start();
+        executeOperationThread.start();
+       
         return userId;
     }
     

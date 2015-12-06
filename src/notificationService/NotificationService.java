@@ -51,10 +51,12 @@ public final class NotificationService extends Thread {
     
     @Override
     public void run(){
+        
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(NOTIFICATIONS).toString();
         urlBuilder.addParameter("userId", userId);
         String url = urlBuilder.toString();
+        
         while (true) {
             handleRequest(new Request(url, ""));
             try {
