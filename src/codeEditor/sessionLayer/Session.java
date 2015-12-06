@@ -1,141 +1,47 @@
 package codeEditor.sessionLayer;
 
-import codeEditor.dataControl.Editor;
-import codeEditor.dataControl.ExecuteOperationsThread;
-import codeEditor.eventNotification.NotificationSubject;
-import codeEditor.networkLayer.NetworkHandler;
+import codeEditor.networkLayer.Request;
+import codeEditor.operation.EditOperations;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
-import codeEditor.operation.userOperations.UserOperations;
-import codeEditor.transform.Transformation;
-import codeEditor.buffer.Buffer;
-import codeEditor.eventNotification.NotificationObserver;
-import config.Configuration;
-import codeEditor.networkLayer.Request;
-import codeEditor.operation.EditOperations;
 import codeEditor.operation.userOperations.RepositionOperation;
+import codeEditor.operation.userOperations.UserOperations;
 import static config.NetworkConfig.PUSH_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.OperationNotExistException;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import urlbuilder.URLBuilder;
 
-public class Session {
-    
-    private final String docId;
-    private final String userId;
-    
-    public final Editor editorInstance;
-    
-    private final Buffer requestBuffer, operationBuffer;
-   
-    private final ExecuteOperationsThread executeOperationThread;
-    private final Transformation transformation;
-   
-    private final NetworkHandler requestHandlerThread; 
-    private final NetworkHandler pollingServiceThread;
-    
-    private final NotificationSubject notificationService;
-    
-    private volatile int lastSynchronized;
-    
-    private final ReentrantLock updateState = new ReentrantLock();
+public class Session extends AbstractSession {
     
     public Session(String userId, String docId) {
-        Configuration.getConfiguration();
-        AbstractSessionFactory sessionFactory = new SessionFactory();
-        
-        notificationService = sessionFactory.createNotificationService();
-        
-        editorInstance = sessionFactory.createEditorInstance(userId, docId, notificationService);
-        this.userId = userId;
-        this.docId = docId;
-        
-        requestBuffer = sessionFactory.createBuffer();
-        operationBuffer= sessionFactory.createBuffer();
-        
-        transformation = sessionFactory.createTranformation(userId);   
-    
-        requestHandlerThread = sessionFactory.createRequestHandlerThread(userId, docId, requestBuffer);
-        pollingServiceThread = sessionFactory.createPollingThread(userId, docId, operationBuffer, transformation, this); 
-        executeOperationThread = sessionFactory.createExecuteOperationThread(editorInstance, operationBuffer);
-       
-        //Register the user on Doc
-        RegisterUser r = new RegisterUser(userId, docId, executeOperationThread);
-        r.registerUserOnDoc();
+        super(userId, docId);
     }
     
-    public String startSession() {
-        requestHandlerThread.start();
-        pollingServiceThread.start();
-        executeOperationThread.start();
-        return userId;
+    private String getPushUrl() {
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PUSH_OPERATIONS).toString();
+        urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
+        return urlBuilder.toString();
     }
     
-    public void stopSession() {
-        requestHandlerThread.interrupt();
-        pollingServiceThread.interrupt();
-        executeOperationThread.interrupt();
-    }
-       
-    public void register(NotificationObserver observer) {
-        this.notificationService.addObserver(observer);
+    public void pushOperation(InsertOperation insertOperation){
+        insertOperation.lastSyncStamp = this.getLastSynchronized();
+        executeOperationThread.pushOperation((Operation) insertOperation);
+        transformation.addOperation(insertOperation);
+        requestBuffer.put(new Request(getPushUrl(), insertOperation.serialize()));
     }
     
-    @SuppressWarnings("empty-statement")
-    public void pushOperation(UserOperations userOperation){
-        try {
-            URLBuilder urlBuilder = new URLBuilder(); 
-            urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PUSH_OPERATIONS).toString();
-            urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
-            String pushUrl = urlBuilder.toString();
-
-            if (userOperation.getType() == EditOperations.INSERT){
-
-                InsertOperation insertOperation = (InsertOperation) userOperation;
-                insertOperation.lastSyncStamp = this.getLastSynchronized();
-                executeOperationThread.pushOperation((Operation) userOperation);
-                transformation.addOperation(insertOperation);
-                requestBuffer.put(new Request(pushUrl, insertOperation.serialize()));
-
-            } else if (userOperation.getType() == EditOperations.ERASE){
-
-                EraseOperation eraseOperation = (EraseOperation) userOperation;
-                eraseOperation.lastSyncStamp = this.getLastSynchronized();
-                executeOperationThread.pushOperation((Operation) userOperation);
-                transformation.addOperation(eraseOperation);
-                requestBuffer.put(new Request(pushUrl, eraseOperation.serialize()));    
-
-            } else if (userOperation.getType() == EditOperations.REPOSITION) {
-
-                RepositionOperation repositionOperation = (RepositionOperation) userOperation;
-                requestBuffer.put(new Request(pushUrl, repositionOperation.serialize()));    
-
-            } else {
-                throw new OperationNotExistException("Operation Doesnot Exist.");
-            }      
-        } catch (OperationNotExistException ex) {
-            Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void pushOperation(EraseOperation eraseOperation) {
+        eraseOperation.lastSyncStamp = this.getLastSynchronized();
+        executeOperationThread.pushOperation((Operation) eraseOperation);
+        transformation.addOperation(eraseOperation);
+        requestBuffer.put(new Request(getPushUrl(), eraseOperation.serialize()));    
     }
     
-    public void lock() throws InterruptedException {
-        while (!operationBuffer.isEmpty());
-        updateState.lock();
-    }
-    
-    public void unlock() {
-        updateState.unlock();
-    }
-
-    public int getLastSynchronized() {
-        return lastSynchronized;
-    }
-
-    public void setLastSynchronized(int lastSynchronized) {
-        this.lastSynchronized = lastSynchronized;
+    public void pushOperation(RepositionOperation repositionOperation) {
+        requestBuffer.put(new Request(getPushUrl(), repositionOperation.serialize()));    
     }
 }

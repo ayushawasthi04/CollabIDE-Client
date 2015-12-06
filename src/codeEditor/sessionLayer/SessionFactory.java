@@ -16,7 +16,7 @@ public class SessionFactory extends AbstractSessionFactory{
 
     @Override
     public NetworkHandler createPollingThread
-        (String userIdentifier, String docIdentifier, Buffer operationBuffer, Transformation transformation, Session session) {
+        (String userIdentifier, String docIdentifier, Buffer operationBuffer, Transformation transformation, AbstractSession session) {
          return new PollService(userIdentifier, docIdentifier, operationBuffer, transformation, session); 
     }
 

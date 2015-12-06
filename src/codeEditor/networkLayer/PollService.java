@@ -4,7 +4,7 @@ import static config.NetworkConfig.POLLING_THREAD_SLEEP_TIME;
 import codeEditor.operation.Deserializer;
 import codeEditor.buffer.Buffer;
 import codeEditor.operation.Operation;
-import codeEditor.sessionLayer.Session;
+import codeEditor.sessionLayer.AbstractSession;
 import codeEditor.transform.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,9 +29,9 @@ public final class PollService extends Thread implements NetworkHandler{
     private final String docId;
     private final Transformation tranformation;
     private Buffer buffer;
-    private final Session session;
+    private final AbstractSession session;
     
-    public PollService(String userId, String docId, Buffer buffer, Transformation transformation, Session session){    
+    public PollService(String userId, String docId, Buffer buffer, Transformation transformation, AbstractSession session){    
         this.userId = userId;
         this.docId = docId;
         this.tranformation = transformation;
