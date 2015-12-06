@@ -15,10 +15,10 @@ import config.Configuration;
 import codeEditor.networkLayer.Request;
 import codeEditor.operation.EditOperations;
 import codeEditor.operation.userOperations.RepositionOperation;
-import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 import static config.NetworkConfig.PUSH_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import exception.OperationNotExistException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import urlbuilder.URLBuilder;
@@ -42,7 +42,7 @@ public class Session {
     
     private volatile int lastSynchronized;
     
-    private final Mutex updateState = new Mutex();
+    private final ReentrantLock updateState = new ReentrantLock();
     
     public Session(String userId, String docId) {
         Configuration.getConfiguration();
@@ -124,23 +124,17 @@ public class Session {
     
     public void lock() throws InterruptedException {
         while (!operationBuffer.isEmpty());
-        updateState.acquire();
+        updateState.lock();
     }
     
     public void unlock() {
-        updateState.release();
+        updateState.unlock();
     }
 
-    /**
-     * @return the lastSynchronized
-     */
     public int getLastSynchronized() {
         return lastSynchronized;
     }
 
-    /**
-     * @param lastSynchronized the lastSynchronized to set
-     */
     public void setLastSynchronized(int lastSynchronized) {
         this.lastSynchronized = lastSynchronized;
     }

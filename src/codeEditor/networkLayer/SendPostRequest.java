@@ -6,7 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 public class SendPostRequest {
     public static final HttpResponse sendPostRequest(String postUrl, String serializedObject) throws IOException {
@@ -15,7 +15,7 @@ public class SendPostRequest {
             StringEntity  postingString =new StringEntity(serializedObject);
             post.setEntity(postingString);
             post.setHeader("Content-type", "application/json");
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = HttpClientBuilder.create().build();
             HttpResponse response = httpClient.execute(post);
             return response;
         } catch (UnsupportedEncodingException e) {
