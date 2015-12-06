@@ -4,10 +4,9 @@ import codeEditor.buffer.SynchronizedBuffer;
 import codeEditor.buffer.Buffer;
 import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.EditorCore;
-import codeEditor.dataControl.ExecuteOperationsThread;
-import codeEditor.eventNotification.NotificationSubject;
-import codeEditor.eventNotification.NotificationService;
-import codeEditor.networkLayer.NetworkHandler;
+import codeEditor.dataControl.Executor;
+import codeEditor.eventNotification.Subject;
+import codeEditor.eventNotification.EventNotification;
 import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
 import codeEditor.transform.Transformation;
@@ -15,17 +14,16 @@ import codeEditor.transform.Transformation;
 public class SessionFactory extends AbstractSessionFactory{
 
     @Override
-    public NetworkHandler createPollingThread
-        (String userIdentifier, String docIdentifier, Buffer operationBuffer, Transformation transformation, AbstractSession session) {
-         return new PollService(userIdentifier, docIdentifier, operationBuffer, transformation, session); 
+    public PollService createPollService() {
+        return new PollService();
     }
 
     @Override
-    public NetworkHandler createRequestHandlerThread(String userId, String docId, Buffer requestBuffer) {
+    public PushService createPushService(String userId, String docId, Buffer requestBuffer) {
         return  new PushService(userId, docId, requestBuffer); 
     }
     @Override
-    public Editor createEditorInstance(String userId, String docId, NotificationSubject notificationService) {
+    public Editor createEditorInstance(String userId, String docId, Subject notificationService) {
         return new EditorCore(userId, docId, notificationService);
     }
 
@@ -40,13 +38,13 @@ public class SessionFactory extends AbstractSessionFactory{
     }
 
     @Override
-    public NotificationService createNotificationService() {
-        return new NotificationService();
+    public EventNotification createNotificationService() {
+        return new EventNotification();
     }
 
     @Override
-    public ExecuteOperationsThread createExecuteOperationThread(Editor editorCore, Buffer operationBuffer) {
-        return new ExecuteOperationsThread(editorCore, operationBuffer);
+    public Executor createExecutor(Editor editorCore, Buffer operationBuffer) {
+        return new Executor(editorCore, operationBuffer);
     }
     
 }

@@ -1,13 +1,13 @@
 package codeEditor.sessionLayer;
 
 import codeEditor.dataControl.Editor;
-import codeEditor.dataControl.ExecuteOperationsThread;
-import codeEditor.eventNotification.NotificationSubject;
-import codeEditor.networkLayer.NetworkHandler;
+import codeEditor.dataControl.Executor;
+import codeEditor.eventNotification.Subject;
 import codeEditor.transform.Transformation;
 import codeEditor.buffer.Buffer;
-import codeEditor.eventNotification.NotificationObserver;
-import codeEditor.operation.userOperations.UserOperations;
+import codeEditor.eventNotification.Observer;
+import codeEditor.networkLayer.PollService;
+import codeEditor.networkLayer.PushService;
 import config.Configuration;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,64 +19,66 @@ public abstract class AbstractSession {
     protected volatile int lastSynchronized;
     protected final ReentrantLock updateState = new ReentrantLock();
     
-    protected final Editor editorInstance;
+    protected final Editor model;
     
     protected final Buffer requestBuffer;
     protected final Buffer operationBuffer;
    
-    protected final ExecuteOperationsThread executeOperationThread;
+    protected final Executor executor;
     
     protected final Transformation transformation;
    
-    protected final NetworkHandler requestHandlerThread; 
-    protected final NetworkHandler pollingServiceThread;
+    protected final PushService pushService; 
+    protected final PollService pollService;
     
-    protected final NotificationSubject notificationService;
+    protected final Subject eventNotification;
     
     
     public AbstractSession(String userId, String docId) {
         
         Configuration.getConfiguration();
-        AbstractSessionFactory sessionFactory = new SessionFactory();
         
-        notificationService = sessionFactory.createNotificationService();
-        
-        editorInstance = sessionFactory.createEditorInstance(userId, docId, notificationService);
         this.userId = userId;
         this.docId = docId;
         
+        AbstractSessionFactory sessionFactory = new SessionFactory();
+
+        eventNotification = sessionFactory.createNotificationService();
+        model = sessionFactory.createEditorInstance(userId, docId, eventNotification);
         requestBuffer = sessionFactory.createBuffer();
-        operationBuffer= sessionFactory.createBuffer();
-        
-        transformation = sessionFactory.createTranformation(userId);   
-    
-        requestHandlerThread = sessionFactory.createRequestHandlerThread(userId, docId, requestBuffer);
-        pollingServiceThread = sessionFactory.createPollingThread(userId, docId, operationBuffer, transformation, this); 
-        executeOperationThread = sessionFactory.createExecuteOperationThread(editorInstance, operationBuffer);
-       
+        operationBuffer = sessionFactory.createBuffer();
+        transformation = sessionFactory.createTranformation(userId);
+        pushService = sessionFactory.createPushService(userId, docId, requestBuffer);
+        pollService = sessionFactory.createPollService()
+                    .setUserId(userId)
+                    .setDocId(docId)
+                    .setBuffer(operationBuffer)
+                    .setTranformation(transformation)
+                    .setSession(this);
+        executor = sessionFactory.createExecutor(model, operationBuffer);
     }
     
     //Starts and Stops the session
     public String startSession() {
         //Register the user on Doc
-        new RegisterUser(userId, docId, executeOperationThread).registerUserOnDoc();
+        new RegisterUser(userId, docId, executor).registerUserOnDoc();
   
-        requestHandlerThread.start();
-        pollingServiceThread.start();
-        executeOperationThread.start();
+        pushService.start();
+        pollService.start();
+        executor.start();
        
         return userId;
     }
     
     public void stopSession() {
-        requestHandlerThread.interrupt();
-        pollingServiceThread.interrupt();
-        executeOperationThread.interrupt();
+        pushService.interrupt();
+        pollService.interrupt();
+        executor.interrupt();
     }
        
     //Register the user for updates from remote
-    public void register(NotificationObserver observer) {
-        this.notificationService.addObserver(observer);
+    public void register(Observer observer) {
+        this.eventNotification.addObserver(observer);
     }
         
     
@@ -89,7 +91,7 @@ public abstract class AbstractSession {
         this.lastSynchronized = lastSynchronized;
     }
     
-    
+ 
     //Lock and Unlock Session
     public void lock() throws InterruptedException {
         //flushes the operation buffer

@@ -1,6 +1,6 @@
 package codeEditor.sessionLayer;
 
-import codeEditor.dataControl.ExecuteOperationsThread;
+import codeEditor.dataControl.Executor;
 import codeEditor.networkLayer.Request;
 import codeEditor.networkLayer.SendPostRequest;
 import codeEditor.operation.RegisterUserOperation;
@@ -18,9 +18,9 @@ import urlbuilder.URLBuilder;
 public class RegisterUser {
     private final String userId;
     private final String docId;
-    private final ExecuteOperationsThread executeOperationThread;
+    private final Executor executeOperationThread;
     
-    public RegisterUser(String userId, String docId,  ExecuteOperationsThread executeOperationThread) {
+    public RegisterUser(String userId, String docId,  Executor executeOperationThread) {
         this.userId = userId;
         this.docId = docId;
         this.executeOperationThread = executeOperationThread; 

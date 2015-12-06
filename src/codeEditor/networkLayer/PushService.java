@@ -14,11 +14,6 @@ public final class PushService extends Thread implements NetworkHandler{
     }
     
     @Override
-    public void setBuffer(Buffer buffer){
-        this.buffer = buffer;
-    }
-    
-    @Override
     public void handleRequest(Request request) {
         boolean retry = DO_RETRY;
         do {
@@ -36,6 +31,10 @@ public final class PushService extends Thread implements NetworkHandler{
     public void handleResponse(HttpResponse response) {
     }
     
+    public void setBuffer(Buffer buffer){
+        this.buffer = buffer;
+    }
+    
     @Override
     public void run(){
         while (!this.isInterrupted()) {
@@ -43,4 +42,5 @@ public final class PushService extends Thread implements NetworkHandler{
             handleRequest(request);
         }
     }
+    
 }

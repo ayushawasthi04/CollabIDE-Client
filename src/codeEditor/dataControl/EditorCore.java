@@ -4,13 +4,13 @@ import codeEditor.buffer.SynchronizedBuffer;
 import codeEditor.buffer.Buffer;
 import codeEditor.model.Model;
 import codeEditor.model.Treap;
-import codeEditor.eventNotification.NotificationSubject;
+import codeEditor.eventNotification.Subject;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
 import exception.OperationNotExistException;
 
-public class EditorCore implements Editor{
+public class EditorCore implements Editor {
     
     Buffer operationBuffer = new SynchronizedBuffer();
     
@@ -18,9 +18,9 @@ public class EditorCore implements Editor{
     private final String userId;
     private final String docId;
     
-    private final NotificationSubject notificationService; 
+    private final Subject notificationService; 
     
-    public EditorCore(String userId, String docId, NotificationSubject notificationService) {
+    public EditorCore(String userId, String docId, Subject notificationService) {
         this.userId = userId;
         this.docId = docId;    
         this.dataModel = new Treap();

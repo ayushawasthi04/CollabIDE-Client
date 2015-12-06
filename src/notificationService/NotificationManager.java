@@ -49,5 +49,5 @@ public class NotificationManager {
             throw new ConnectivityFailureException("Unable to Connect");
         }    
     }
-
+    
 }

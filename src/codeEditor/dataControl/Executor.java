@@ -3,16 +3,12 @@ package codeEditor.dataControl;
 import codeEditor.operation.Operation;
 import codeEditor.buffer.Buffer;
 
-interface ExecuteOperations {
-    public void setBuffer(Buffer buffer);
-    public void doOperations();
-}
 
-public class ExecuteOperationsThread extends Thread{
+public class Executor extends Thread{
     Editor editorCore;
     Buffer operationBuffer;
     
-    public ExecuteOperationsThread(Editor editorCore, Buffer operationBuffer) {
+    public Executor(Editor editorCore, Buffer operationBuffer) {
         this.editorCore = editorCore;
         this.operationBuffer = operationBuffer; 
     }

@@ -24,14 +24,14 @@ public class Session extends AbstractSession {
     
     public void pushOperation(InsertOperation insertOperation){
         insertOperation.lastSyncStamp = this.getLastSynchronized();
-        executeOperationThread.pushOperation((Operation) insertOperation);
+        executor.pushOperation((Operation) insertOperation);
         transformation.addOperation(insertOperation);
         requestBuffer.put(new Request(getPushUrl(), insertOperation.serialize()));
     }
     
     public void pushOperation(EraseOperation eraseOperation) {
         eraseOperation.lastSyncStamp = this.getLastSynchronized();
-        executeOperationThread.pushOperation((Operation) eraseOperation);
+        executor.pushOperation((Operation) eraseOperation);
         transformation.addOperation(eraseOperation);
         requestBuffer.put(new Request(getPushUrl(), eraseOperation.serialize()));    
     }

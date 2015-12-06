@@ -25,25 +25,12 @@ import org.json.JSONObject;
 import urlbuilder.URLBuilder;
 
 public final class PollService extends Thread implements NetworkHandler{
-    private final String userId;
-    private final String docId;
-    private final Transformation tranformation;
+    private String userId;
+    private String docId;
+    private Transformation tranformation;
     private Buffer buffer;
-    private final AbstractSession session;
-    
-    public PollService(String userId, String docId, Buffer buffer, Transformation transformation, AbstractSession session){    
-        this.userId = userId;
-        this.docId = docId;
-        this.tranformation = transformation;
-        this.session = session;
-        this.buffer = buffer;
-    }
-    
-    @Override
-    public void setBuffer(Buffer buffer){
-        this.buffer = buffer;
-    }
-    
+    private AbstractSession session;
+  
     @Override
     public void handleRequest(Request request) {
         try {
@@ -114,4 +101,31 @@ public final class PollService extends Thread implements NetworkHandler{
             }
         }
     }
+
+    //Setters for Builder
+    public PollService setUserId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public PollService setDocId(String docId) {
+        this.docId = docId;
+        return this;
+    }
+
+    public PollService setTranformation(Transformation tranformation) {
+        this.tranformation = tranformation;
+        return this;
+    }
+
+    public PollService setSession(AbstractSession session) {
+        this.session = session;
+        return this;
+    }
+    
+    public PollService setBuffer(Buffer buffer){
+        this.buffer = buffer;
+        return this;
+    }
+    
 }
