@@ -1,7 +1,7 @@
 package codeEditor.operation.userOperations;
 
 import com.google.gson.Gson;
-import codeEditor.operation.EditOperations;
+import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 
 public final class EraseOperation extends Operation implements UserOperations {
@@ -9,7 +9,7 @@ public final class EraseOperation extends Operation implements UserOperations {
     public int position;
     
     public EraseOperation(String operationId, String userId, int position) {
-        super(operationId,  userId, EditOperations.ERASE);
+        super(operationId,  userId, OperationType.ERASE);
         this.position = position;
     }
     
@@ -20,6 +20,11 @@ public final class EraseOperation extends Operation implements UserOperations {
     public EraseOperation(EraseOperation o) {
         super(o.operationId, o.userId, o.type);
         this.position = o.position;
+    }
+    
+    
+    public void setLastSyncStamp(int lastSyncTimeStamp) {
+        this.lastSyncStamp = lastSyncTimeStamp;
     }
     
     @Override
@@ -34,10 +39,16 @@ public final class EraseOperation extends Operation implements UserOperations {
         this.position = jsonEntity.position;
         this.userId = jsonEntity.userId;
         this.operationId = jsonEntity.operationId;
-        this.type = EditOperations.ERASE;
+        this.type = OperationType.ERASE;
     }
     
-    public void setLastSyncStamp(int lastSyncTimeStamp) {
-        this.lastSyncStamp = lastSyncTimeStamp;
+    @Override
+    public String toString() {
+        String s = "";
+        s += "OperationId: " + operationId + "\n";
+        s += "UserId: " + userId + "\n";
+        s += "Type: " + type + "\n";
+        s += "Position: " + position + "\n";
+        return s;
     }
 }

@@ -1,6 +1,6 @@
 package codeEditor.transform.operationalTransform;
 
-import codeEditor.operation.EditOperations;
+import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
@@ -8,27 +8,27 @@ import codeEditor.operation.userOperations.RepositionOperation;
 
 public class OperationalTransform {
     public static Operation transform(Operation o1, Operation o2, boolean flag) {
-        if (o1.type == EditOperations.INSERT) {
+        if (o1.type == OperationType.INSERT) {
             InsertOperation op1 = (InsertOperation) o1;
-            if (o2.type == EditOperations.INSERT) {
+            if (o2.type == OperationType.INSERT) {
                 InsertOperation op2 = (InsertOperation) o2;
                 return applyTransform(op1, op2, flag);
-            } else if (o2.type == EditOperations.ERASE) {
+            } else if (o2.type == OperationType.ERASE) {
                 EraseOperation op2 = (EraseOperation) o2;    
                 return applyTransform(op1, op2, flag);
-            } else if (o2.type == EditOperations.REPOSITION) {
+            } else if (o2.type == OperationType.REPOSITION) {
                 RepositionOperation op2 = (RepositionOperation) o2;
                 return applyTransform(op1, op2, flag);    
             }
-        } else if (o1.type == EditOperations.ERASE) {
+        } else if (o1.type == OperationType.ERASE) {
             EraseOperation op1 = (EraseOperation) o1;    
-            if (o2.type == EditOperations.INSERT) {
+            if (o2.type == OperationType.INSERT) {
                 InsertOperation op2 = (InsertOperation) o2;
                 return applyTransform(op1, op2, flag);
-            } else if (o2.type == EditOperations.ERASE) {
+            } else if (o2.type == OperationType.ERASE) {
                 EraseOperation op2 = (EraseOperation) o2;    
                 return applyTransform(op1, op2, flag);
-            } else if (o2.type == EditOperations.REPOSITION) {
+            } else if (o2.type == OperationType.REPOSITION) {
                 RepositionOperation op2 = (RepositionOperation) o2;
                 return applyTransform(op1, op2, flag);    
             }

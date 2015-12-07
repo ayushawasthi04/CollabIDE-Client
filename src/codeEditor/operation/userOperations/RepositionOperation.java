@@ -1,7 +1,7 @@
 package codeEditor.operation.userOperations;
 
 import com.google.gson.Gson;
-import codeEditor.operation.EditOperations;
+import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 
 public class RepositionOperation extends Operation implements UserOperations {
@@ -9,7 +9,7 @@ public class RepositionOperation extends Operation implements UserOperations {
     public String username;
     
     public RepositionOperation(String operationId, String userId, int position, String username) {
-        super(operationId,  userId, EditOperations.REPOSITION);
+        super(operationId,  userId, OperationType.REPOSITION);
         this.position = position;
         this.username = username;
     }
@@ -39,6 +39,16 @@ public class RepositionOperation extends Operation implements UserOperations {
         
         this.userId = jsonEntity.userId;
         this.operationId = jsonEntity.operationId;
-        this.type = EditOperations.REPOSITION;
+        this.type = OperationType.REPOSITION;
+    }
+    
+    @Override
+    public String toString() {
+        String s = "";
+        s += "OperationId: " + operationId + "\n";
+        s += "UserId: " + userId + "\n";
+        s += "Type: " + type + "\n";
+        s += "Position: " + position + "\n";
+        return s;
     }
 }

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 public class RegisterUserOperation extends Operation {
     public RegisterUserOperation(String operationId, String userIdentifier) {
-        super(operationId, userIdentifier, EditOperations.REGISTER);
+        super(operationId, userIdentifier, OperationType.REGISTER);
     }
     
     @Override

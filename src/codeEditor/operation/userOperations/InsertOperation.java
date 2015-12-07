@@ -1,7 +1,7 @@
 package codeEditor.operation.userOperations;
 
 import com.google.gson.Gson;
-import codeEditor.operation.EditOperations;
+import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 
 public class InsertOperation extends Operation implements UserOperations {
@@ -14,7 +14,7 @@ public class InsertOperation extends Operation implements UserOperations {
     }
     
     public InsertOperation(String operationId, String userId, int position, char charToInsert){
-        super(operationId, userId, EditOperations.INSERT);
+        super(operationId, userId, OperationType.INSERT);
         this.charToInsert = charToInsert;       
         this.position = position;
     }
@@ -38,10 +38,21 @@ public class InsertOperation extends Operation implements UserOperations {
         this.position = jsonEntity.position;
         this.userId = jsonEntity.userId;
         this.operationId = jsonEntity.operationId;
-        this.type = EditOperations.INSERT;
+        this.type = OperationType.INSERT;
     }   
 
     public void setLastSyncStamp(int lastSyncStamp) {
         this.lastSyncStamp = lastSyncStamp;
+    }
+    
+    @Override
+    public String toString() {
+        String s = "";
+        s += "OperationId: " + operationId + "\n";
+        s += "UserId: " + userId + "\n";
+        s += "Type: " + type + "\n";
+        s += "CharToInsert: " + charToInsert + "\n";
+        s += "Position: " + position + "\n";
+        return s;
     }
 }

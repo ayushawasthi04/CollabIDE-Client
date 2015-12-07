@@ -5,7 +5,7 @@ import ui.util.Work;
 import ui.util.RandomGenerator;
 import authenticate.entities.User;
 import codeEditor.eventNotification.Observer;
-import codeEditor.operation.EditOperations;
+import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
@@ -357,18 +357,18 @@ public class AceEditor extends Region implements Observer {
     public void notifyObserver(Operation operation) {
         //System.out.println("Hi");
         //System.out.println(operation.getType());
-        if (operation.getType() == EditOperations.INSERT) {
+        if (operation.getType() == OperationType.INSERT) {
             InsertOperation insertOperation = (InsertOperation) operation;
 
             Platform.runLater(() -> {
                 insertStringAtPosition(insertOperation.position, "" + insertOperation.charToInsert);
             });
-        } else if (operation.getType() == EditOperations.ERASE) {
+        } else if (operation.getType() == OperationType.ERASE) {
             EraseOperation eraseOperation = (EraseOperation) operation;
             Platform.runLater(() -> {
                 performBackSpaceAtPosition(eraseOperation.position);
             });
-        } else if (operation.getType() == EditOperations.REPOSITION) {
+        } else if (operation.getType() == OperationType.REPOSITION) {
             RepositionOperation repositionOperation = (RepositionOperation) operation;
 
             if (editUserPosition.containsKey(repositionOperation.username)) {

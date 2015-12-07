@@ -1,9 +1,9 @@
 package codeEditor.operation.userOperations;
 
-import codeEditor.operation.EditOperations;
+import codeEditor.operation.OperationType;
 
 public interface UserOperations {
-    EditOperations getType();
+    OperationType getType();
     String serialize();
     void deserialize(String json);
 }

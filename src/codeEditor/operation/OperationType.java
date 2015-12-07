@@ -1,6 +1,6 @@
 package codeEditor.operation;
 
-public enum EditOperations {
+public enum OperationType {
     INSERT("INSERT"),
     ERASE("ERASE"),
     REGISTER("REGISTER"),
@@ -8,7 +8,7 @@ public enum EditOperations {
     
     private final String operation;
     
-    private EditOperations(String operation){
+    private OperationType(String operation){
         this.operation = operation;
     }
     
