@@ -2,10 +2,10 @@ package codeEditor.sessionLayer;
 
 import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.Executor;
-import codeEditor.eventNotification.Subject;
+import codeEditor.eventNotification.EventSubject;
 import codeEditor.transform.Transformation;
 import codeEditor.buffer.Buffer;
-import codeEditor.eventNotification.Observer;
+import codeEditor.eventNotification.EventObserver;
 import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
 import config.Configuration;
@@ -31,7 +31,7 @@ public abstract class AbstractSession {
     protected final PushService pushService; 
     protected final PollService pollService;
     
-    protected final Subject eventNotification;
+    protected final EventSubject eventNotification;
     
     
     public AbstractSession(String userId, String docId) {
@@ -77,7 +77,7 @@ public abstract class AbstractSession {
     }
        
     //Register the user for updates from remote
-    public void register(Observer observer) {
+    public void register(EventObserver observer) {
         this.eventNotification.addObserver(observer);
     }
         
@@ -96,7 +96,6 @@ public abstract class AbstractSession {
     public void lock() throws InterruptedException {
         //flushes the operation buffer
         while (!executeBuffer.isEmpty());
-        
         //guarantees that the no operation is done on session untile the session is unlocked again 
         updateState.lock();
     }

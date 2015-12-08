@@ -5,7 +5,7 @@ import codeEditor.buffer.Buffer;
 import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.EditorCore;
 import codeEditor.dataControl.Executor;
-import codeEditor.eventNotification.Subject;
+import codeEditor.eventNotification.EventSubject;
 import codeEditor.eventNotification.EventNotification;
 import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
@@ -23,7 +23,7 @@ public class SessionFactory extends AbstractSessionFactory{
         return  new PushService(userId, docId, requestBuffer); 
     }
     @Override
-    public Editor createEditorInstance(String userId, String docId, Subject notificationService) {
+    public Editor createEditorInstance(String userId, String docId, EventSubject notificationService) {
         return new EditorCore(userId, docId, notificationService);
     }
 

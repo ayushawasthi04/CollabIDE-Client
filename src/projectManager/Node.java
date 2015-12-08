@@ -13,7 +13,7 @@ public class Node {
         this.path = path;
     }
     
-    //Converts the code into JSON Format
+    //Converts the node into JSON Format
     public String toJson() {
         String json = new Gson().toJson(this); 
         return json;

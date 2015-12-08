@@ -4,11 +4,11 @@ import codeEditor.buffer.SynchronizedBuffer;
 import codeEditor.buffer.Buffer;
 import codeEditor.model.Model;
 import codeEditor.model.Treap;
-import codeEditor.eventNotification.Subject;
+import codeEditor.eventNotification.EventSubject;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
-import exception.OperationNotExistException;
+import exception.OperationNotSupported;
 
 public class EditorCore implements Editor {
     
@@ -18,9 +18,9 @@ public class EditorCore implements Editor {
     private final String userId;
     private final String docId;
     
-    private final Subject notificationService; 
+    private final EventSubject notificationService; 
     
-    public EditorCore(String userId, String docId, Subject notificationService) {
+    public EditorCore(String userId, String docId, EventSubject notificationService) {
         this.userId = userId;
         this.docId = docId;    
         this.dataModel = new Treap();
@@ -61,7 +61,7 @@ public class EditorCore implements Editor {
                 case "REPOSITION": {
                 } break;    
                 default: {
-                    throw new OperationNotExistException("Operation doesnot Exist.");
+                    throw new OperationNotSupported(operation.getType() + " operation not supported.");
                 }
             }
             if (operation.userId.equals(this.userId)) {
@@ -69,7 +69,7 @@ public class EditorCore implements Editor {
             } else {
                 notificationService.notifyObservers(operation);
             }
-        } catch (OperationNotExistException e){
+        } catch (OperationNotSupported e){
             e.printStackTrace(System.err);
         }
     }

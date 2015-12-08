@@ -4,7 +4,7 @@ import codeEditor.dataControl.Editor;
 import codeEditor.dataControl.Executor;
 import codeEditor.transform.Transformation;
 import codeEditor.buffer.Buffer;
-import codeEditor.eventNotification.Subject;
+import codeEditor.eventNotification.EventSubject;
 import codeEditor.eventNotification.EventNotification;
 import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
@@ -21,7 +21,7 @@ public abstract class AbstractSessionFactory {
         (String userId, String docId, Buffer requestBuffer);
     
     public abstract Editor createEditorInstance
-        (String userId, String docId, Subject notificationService);
+        (String userId, String docId, EventSubject notificationService);
     
     public abstract Transformation createTranformation
         (String userId);

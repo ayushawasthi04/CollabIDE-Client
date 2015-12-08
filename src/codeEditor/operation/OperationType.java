@@ -5,7 +5,7 @@ public enum OperationType {
     ERASE("ERASE"),
     REGISTER("REGISTER"),
     REPOSITION("REPOSITION");
-    
+      
     private final String operation;
     
     private OperationType(String operation){

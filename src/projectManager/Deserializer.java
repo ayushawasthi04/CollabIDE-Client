@@ -5,9 +5,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.lang.reflect.Type;
-import projectManager.Collections;
-import projectManager.Doc;
-import projectManager.Node;
 
 class FileTypeNotFound extends Exception{
         FileTypeNotFound(String errorMessage) {   
@@ -27,11 +24,13 @@ public class Deserializer implements JsonDeserializer<Node>{
             
             Node node;
             switch(type) {
-                case "COLLECTION": node = new Collections(name, path); break;
+                case "COLLECTION": {
+                    node = new Collections(name, path);
+                } break;
                 case "DOC": {
                     String identifier = jsonObject.get("identifier").getAsString();
                     node = new Doc(name, path, identifier);
-                }; break;
+                } break;
                 default: throw new FileTypeNotFound("No such FileType exists");
             }
             return node;

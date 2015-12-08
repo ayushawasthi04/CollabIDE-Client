@@ -23,7 +23,7 @@ public class Collections extends Node {
     }
     
     public Node createNode(String name, Type type) throws ConnectivityFailureException, UnableToCreateException {
-        System.out.println(name);
+        //System.out.println(name);
         String projectPath = getPath() + "." + getName();
         Node node = new Node(name, projectPath, type); 
         return addNode(node);

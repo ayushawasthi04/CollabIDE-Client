@@ -2,7 +2,7 @@ package codeEditor.eventNotification;
 
 import codeEditor.operation.Operation;
 
-public interface Subject {
-    public void addObserver(Observer observer);
+public interface EventSubject {
+    public void addObserver(EventObserver observer);
     public void notifyObservers(Operation operation);
 }
