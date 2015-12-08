@@ -14,8 +14,8 @@ public final class PushService extends Thread implements NetworkHandler{
     public static boolean DO_RETRY = true;
     
     private Buffer buffer;
-    private String userId;
-    private String docId;
+    private final String userId;
+    private final String docId;
     
     public PushService(String userId, String docId, Buffer buffer){    
         this.userId = userId;
