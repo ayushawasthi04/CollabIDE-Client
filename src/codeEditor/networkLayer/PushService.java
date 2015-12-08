@@ -1,16 +1,33 @@
 package codeEditor.networkLayer;
 
 import codeEditor.buffer.Buffer;
+import codeEditor.operation.Operation;
+import com.google.gson.Gson;
+import static config.NetworkConfig.PUSH_OPERATIONS;
+import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
+import java.util.ArrayList;
 import org.apache.http.HttpResponse;
+import urlbuilder.URLBuilder;
 
 public final class PushService extends Thread implements NetworkHandler{
     public static boolean DO_RETRY = true;
     
     private Buffer buffer;
+    private String userId;
+    private String docId;
     
     public PushService(String userId, String docId, Buffer buffer){    
+        this.userId = userId;
+        this.docId = docId;
         setBuffer(buffer);
+    }
+    
+    private String getPushUrl() {
+        URLBuilder urlBuilder = new URLBuilder(); 
+        urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(PUSH_OPERATIONS).toString();
+        urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
+        return urlBuilder.toString();
     }
     
     @Override
@@ -37,9 +54,15 @@ public final class PushService extends Thread implements NetworkHandler{
     
     @Override
     public void run(){
+        ArrayList<Operation> operationsToPush = new ArrayList<>();
         while (!this.isInterrupted()) {
-            Request request = (Request) buffer.take();
+            do {
+               Operation operation = (Operation) buffer.take();
+               operationsToPush.add(operation);
+            } while (!buffer.isEmpty() && operationsToPush.size() < 5);
+            Request request = new Request(getPushUrl(), new Gson().toJson(operationsToPush));
             handleRequest(request);
+            operationsToPush.clear();
         }
     }
     
