@@ -71,9 +71,13 @@ public abstract class AbstractSession {
     }
     
     public void stopSession() {
+        System.err.println("Stopping Push Thread");
         pushService.interrupt();
+        System.err.println("Stopping Poll Thread ");
         pollService.interrupt();
+        System.err.println("Stopping Executor Thread ");
         executor.interrupt();
+        
         //Unregister user from doc
         new UnregisterUser(userId, docId, executor).unregisterUser();
     }

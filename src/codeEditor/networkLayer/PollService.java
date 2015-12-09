@@ -98,8 +98,10 @@ public final class PollService extends Thread implements NetworkHandler{
             try {
                 Thread.sleep(POLLING_THREAD_SLEEP_TIME);
             } catch (InterruptedException ex) {
+                break;
             }
         }
+        System.err.println("Poll Stopped");
     }
 
     //Setters for Builder

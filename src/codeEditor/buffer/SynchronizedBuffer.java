@@ -20,7 +20,6 @@ public class SynchronizedBuffer implements Buffer {
         try {
             return buffer.take();
         } catch (InterruptedException ex) {
-            ex.printStackTrace(System.err);
         }
         return null;
     }
