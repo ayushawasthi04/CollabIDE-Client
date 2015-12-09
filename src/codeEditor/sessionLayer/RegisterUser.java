@@ -18,12 +18,12 @@ import urlbuilder.URLBuilder;
 public class RegisterUser {
     private final String userId;
     private final String docId;
-    private final Executor executeOperationThread;
+    private final Executor executor;
     
     public RegisterUser(String userId, String docId,  Executor executeOperationThread) {
         this.userId = userId;
         this.docId = docId;
-        this.executeOperationThread = executeOperationThread; 
+        this.executor = executeOperationThread; 
     }
     
     public final void registerUserOnDoc() {
@@ -44,12 +44,12 @@ public class RegisterUser {
                 //
                 content = content.replaceAll("\r\n", "\n");
                 for (int i = 0; i < content.length(); i++) {
-                    executeOperationThread.pushOperation(new InsertOperation(RandomGen.getRandom(), "0", i, content.charAt(i)));
+                    executor.pushOperation(new InsertOperation(RandomGen.getRandom(), "0", i, content.charAt(i)));
                 }
                 //
                 retry = false;
             } catch (IOException | UnsupportedOperationException ex) {
-                System.err.println("Unable to send HTTP request. Connection Refused. Retrying...");
+                System.err.println("Unable to register due to connectivity failure");
             }
         } while (retry);
     }

@@ -60,7 +60,7 @@ public abstract class AbstractSession {
     
     //Starts and Stops the session
     public String startSession() {
-        //Register the user on Doc
+        //Register user on doc
         new RegisterUser(userId, docId, executor).registerUserOnDoc();
   
         pushService.start();
@@ -74,6 +74,8 @@ public abstract class AbstractSession {
         pushService.interrupt();
         pollService.interrupt();
         executor.interrupt();
+        //Unregister user from doc
+        new UnregisterUser(userId, docId, executor).unregisterUser();
     }
        
     //Register the user for updates from remote

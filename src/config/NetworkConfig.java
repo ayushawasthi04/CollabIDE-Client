@@ -12,6 +12,7 @@ public abstract class NetworkConfig {
    
     //Registers the user for the first time
     public static String REGISTER = "register";
+    public static String UNREGISTER = "unregister";
     
     //Push and Get Operations
     public static String PUSH_OPERATIONS = "push_operation";

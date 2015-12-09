@@ -3,8 +3,9 @@ package codeEditor.operation;
 public enum OperationType {
     INSERT("INSERT"),
     ERASE("ERASE"),
+    REPOSITION("REPOSITION"),
     REGISTER("REGISTER"),
-    REPOSITION("REPOSITION");
+    UNREGISTER("UNREGISTER");
       
     private final String operation;
     
