@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -239,7 +241,10 @@ public class AceEditor extends Region implements EventObserver {
         System.out.println(txt);
     }
 
-    public void notifyTextChange(String json, int start, int end) {
+    public synchronized void notifyTextChange(String json, int start, int end) {
+        try {
+            session.lock();
+        
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             TextChange change = gson.fromJson(json, TextChange.class);
@@ -277,6 +282,10 @@ public class AceEditor extends Region implements EventObserver {
                     session.pushOperation(insertOperation);
                 }
             }
+        } catch (InterruptedException ex) {
+        } finally {
+            session.unlock();
+        }
     }
 
     private String encodeString(String content) {

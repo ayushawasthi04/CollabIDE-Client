@@ -5,7 +5,7 @@ import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 
 public final class EraseOperation extends Operation implements UserOperations {
-    public int lastSyncStamp;
+    public int synTimeStamp;
     public int position;
     
     public EraseOperation(String operationId, String userId, int position) {
@@ -22,9 +22,14 @@ public final class EraseOperation extends Operation implements UserOperations {
         this.position = o.position;
     }
     
+    //Getters and Setters
+    public synchronized EraseOperation setSynTimeStamp(int timeStamp) {
+        this.synTimeStamp = timeStamp;
+        return this;
+    }
     
-    public void setLastSyncStamp(int lastSyncTimeStamp) {
-        this.lastSyncStamp = lastSyncTimeStamp;
+    public synchronized int getSynTimeStamp() {
+        return this.synTimeStamp;
     }
     
     @Override

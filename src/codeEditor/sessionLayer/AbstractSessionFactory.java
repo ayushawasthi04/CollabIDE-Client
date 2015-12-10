@@ -21,7 +21,7 @@ public abstract class AbstractSessionFactory {
         (String userId, String docId, Buffer requestBuffer);
     
     public abstract Editor createEditorInstance
-        (String userId, String docId, EventSubject notificationService);
+        (String userId, String docId, EventSubject notificationService, AbstractSession session);
     
     public abstract Transformation createTranformation
         (String userId);

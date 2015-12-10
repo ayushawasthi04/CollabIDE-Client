@@ -5,7 +5,7 @@ import codeEditor.operation.OperationType;
 import codeEditor.operation.Operation;
 
 public class InsertOperation extends Operation implements UserOperations {
-    public int lastSyncStamp;
+    public int synTimeStamp;
     public int position;
     public char charToInsert;
     
@@ -41,8 +41,14 @@ public class InsertOperation extends Operation implements UserOperations {
         this.type = OperationType.INSERT;
     }   
 
-    public void setLastSyncStamp(int lastSyncStamp) {
-        this.lastSyncStamp = lastSyncStamp;
+    //Setters and Getters
+    public synchronized InsertOperation setSynTimeStamp(int timeStamp) {
+        this.synTimeStamp = timeStamp;
+        return this;
+    }
+    
+    public synchronized int getSynTimeStamp() {
+        return this.synTimeStamp;
     }
     
     @Override

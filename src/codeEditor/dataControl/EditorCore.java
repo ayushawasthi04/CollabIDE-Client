@@ -8,6 +8,7 @@ import codeEditor.eventNotification.EventSubject;
 import codeEditor.operation.Operation;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
+import codeEditor.sessionLayer.AbstractSession;
 import exception.OperationNotSupported;
 
 public class EditorCore implements Editor {
@@ -17,14 +18,15 @@ public class EditorCore implements Editor {
     private final Model dataModel;
     private final String userId;
     private final String docId;
-    
+    private final AbstractSession session;
     private final EventSubject notificationService; 
     
-    public EditorCore(String userId, String docId, EventSubject notificationService) {
+    public EditorCore(String userId, String docId, EventSubject notificationService, AbstractSession session) {
         this.userId = userId;
         this.docId = docId;    
         this.dataModel = new Treap();
         this.notificationService = notificationService;
+        this.session = session;
     }
     
     private void insertCharacter(int positionToInsert, char character) {
@@ -48,15 +50,18 @@ public class EditorCore implements Editor {
     @Override
     public void performOperation(Operation operation) {
         try {
-            //System.out.println(operation.getType().toString());
             switch(operation.getType().toString()) {
                 case "INSERT":{
                     InsertOperation insertOperation = (InsertOperation) operation;
                     this.insertCharacter(insertOperation.position, insertOperation.charToInsert);   
+                    System.err.println("Insert SynTimeStamp" + insertOperation.getSynTimeStamp());
+                    session.setLastSynchronized(insertOperation.getSynTimeStamp());
                 } break;
                 case "ERASE": {
                     EraseOperation eraseOperation = (EraseOperation) operation;
                     this.eraseCharacter(eraseOperation.position);
+                    System.err.println("Erase SynTimeStamp" + eraseOperation.getSynTimeStamp());
+                    session.setLastSynchronized(eraseOperation.getSynTimeStamp());
                 } break;
                 case "REPOSITION": {
                 } break;    

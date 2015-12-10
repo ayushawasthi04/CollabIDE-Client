@@ -23,8 +23,8 @@ public class SessionFactory extends AbstractSessionFactory{
         return  new PushService(userId, docId, requestBuffer); 
     }
     @Override
-    public Editor createEditorInstance(String userId, String docId, EventSubject notificationService) {
-        return new EditorCore(userId, docId, notificationService);
+    public Editor createEditorInstance(String userId, String docId, EventSubject notificationService, AbstractSession session) {
+        return new EditorCore(userId, docId, notificationService, session);
     }
 
     @Override

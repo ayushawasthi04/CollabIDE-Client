@@ -11,7 +11,8 @@ import org.apache.http.HttpResponse;
 import urlbuilder.URLBuilder;
 
 public final class PushService extends Thread implements NetworkHandler{
-    public static boolean DO_RETRY = true;
+    private final static boolean DO_RETRY = true;
+    private final static int THRESHOLD = 5;
     
     private Buffer buffer;
     private final String userId;
@@ -55,22 +56,25 @@ public final class PushService extends Thread implements NetworkHandler{
     @Override
     public void run(){
         ArrayList<Operation> operationsToPush = new ArrayList<>();
+        
         while (!this.isInterrupted()) {
-            do {
-               Operation operation = (Operation) buffer.take();
-               if (operation != null) {  
-                    operationsToPush.add(operation);
-               } else { // caused when thread is interrupted
-                   break;
-               }
-            } while (!buffer.isEmpty() && operationsToPush.size() < 5);
-            
-            if (operationsToPush.size() > 0) {
-                Request request = new Request(getPushUrl(), new Gson().toJson(operationsToPush));
-                handleRequest(request);
-                operationsToPush.clear();
-            } else {
+            try {
+                do {
+                   Operation operation = (Operation) buffer.take();
+                   if (operation != null) {  
+                        operationsToPush.add(operation);
+                   } else { // caused when thread is interrupted
+                       throw new InterruptedException();
+                   }
+                } while (!buffer.isEmpty() && operationsToPush.size() < THRESHOLD);
+            } catch (InterruptedException ex) {
                 break;
+            } finally {
+                if (operationsToPush.size() > 0) { // if there exist some operations to be pushed to remote
+                    Request request = new Request(getPushUrl(), new Gson().toJson(operationsToPush));
+                    handleRequest(request);
+                    operationsToPush.clear();
+                } 
             }
         }
         System.err.println("Push Stopped");

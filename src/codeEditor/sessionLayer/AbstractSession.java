@@ -44,7 +44,7 @@ public abstract class AbstractSession {
         AbstractSessionFactory sessionFactory = new SessionFactory();
 
         eventNotification = sessionFactory.createNotificationService();
-        model = sessionFactory.createEditorInstance(userId, docId, eventNotification);
+        model = sessionFactory.createEditorInstance(userId, docId, eventNotification, this);
         pushBuffer = sessionFactory.createBuffer();
         executeBuffer = sessionFactory.createBuffer();
         transformation = sessionFactory.createTranformation(userId);
@@ -89,19 +89,19 @@ public abstract class AbstractSession {
         
     
     //Get the last time session is synchronized with remote
-    public int getLastSynchronized() {
+    public synchronized int getLastSynchronized() {
         return lastSynchronized;
     }
 
-    public void setLastSynchronized(int lastSynchronized) {
+    public synchronized void setLastSynchronized(int lastSynchronized) {
         this.lastSynchronized = lastSynchronized;
     }
     
  
     //Lock and Unlock Session
     public void lock() throws InterruptedException {
-        //flushes the operation buffer
-        while (!executeBuffer.isEmpty());
+        //while (!executeBuffer.isEmpty());
+        
         //guarantees that the no operation is done on session untile the session is unlocked again 
         updateState.lock();
     }

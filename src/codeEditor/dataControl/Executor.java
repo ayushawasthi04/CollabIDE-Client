@@ -3,7 +3,6 @@ package codeEditor.dataControl;
 import codeEditor.operation.Operation;
 import codeEditor.buffer.Buffer;
 
-
 public class Executor extends Thread{
     Editor editorCore;
     Buffer operationBuffer;
