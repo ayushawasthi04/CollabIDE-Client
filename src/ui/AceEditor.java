@@ -210,6 +210,20 @@ public class AceEditor extends Region implements EventObserver {
         });
     }
 
+    
+    public  void setReadOnly() {
+        Platform.runLater(() -> {
+            webEngine.executeScript("setReadOnly()");
+        });
+    }
+    
+    public void unsetReadOnly() {
+        Platform.runLater(() -> {
+            webEngine.executeScript("unsetReadOnly()");    
+        });
+    }
+    
+    
     private void performBackSpaceAtPosition(int index) {
         Platform.runLater(() -> {
             webEngine.executeScript("erase(" + (index) + ")");
@@ -242,9 +256,8 @@ public class AceEditor extends Region implements EventObserver {
     }
 
     public synchronized void notifyTextChange(String json, int start, int end) {
-        System.err.println("Keys Pressed");
-        try {
-            session.lock();
+        //try {
+            //session.lock();
         
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -283,10 +296,10 @@ public class AceEditor extends Region implements EventObserver {
                     session.pushOperation(insertOperation);
                 }
             }
-        } catch (InterruptedException ex) {
+        /*} catch (InterruptedException ex) {
         } finally {
-            session.unlock();
-        }
+            //session.unlock();
+        }*/
     }
 
     private String encodeString(String content) {

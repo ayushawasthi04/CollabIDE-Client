@@ -126,7 +126,8 @@ public class Treap implements Model{
                 root = insert(root, positionToInsert, character);
             }
         } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace(System.out);
+            e.printStackTrace(System.err);
+            System.err.println(toString());
         }
     }
     
@@ -141,6 +142,7 @@ public class Treap implements Model{
             root = erase(root, positionToErase);
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace(System.out);
+            System.err.println(toString());
         }
     }
 
@@ -158,6 +160,7 @@ public class Treap implements Model{
             }
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace(System.out);
+            System.err.println(toString());
         }
         char invalidChar = '?';
         return invalidChar;

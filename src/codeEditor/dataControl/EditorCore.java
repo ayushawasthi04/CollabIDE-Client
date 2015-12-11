@@ -54,15 +54,15 @@ public class EditorCore implements Editor {
                 case "INSERT":{
                     InsertOperation insertOperation = (InsertOperation) operation;
                     this.insertCharacter(insertOperation.position, insertOperation.charToInsert);   
-                    System.err.println("Insert SynTimeStamp => " + insertOperation.getSynTimeStamp());
-                    System.err.println("Performing = " + insertOperation);
+                    /*System.err.println("Insert SynTimeStamp => " + insertOperation.getSynTimeStamp());
+                    System.err.println("Performing = " + insertOperation);*/
                     session.setLastSynchronized(insertOperation.getSynTimeStamp());
                 } break;
                 case "ERASE": {
                     EraseOperation eraseOperation = (EraseOperation) operation;
                     this.eraseCharacter(eraseOperation.position);
-                    System.err.println("Erase SynTimeStamp => " + eraseOperation.getSynTimeStamp());
-                    System.err.println("Performing = " + eraseOperation);
+                    /*System.err.println("Erase SynTimeStamp => " + eraseOperation.getSynTimeStamp());
+                    System.err.println("Performing = " + eraseOperation);*/
                     session.setLastSynchronized(eraseOperation.getSynTimeStamp());
                 } break;
                 case "REPOSITION": {

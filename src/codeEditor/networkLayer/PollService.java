@@ -4,6 +4,7 @@ import static config.NetworkConfig.POLLING_THREAD_SLEEP_TIME;
 import codeEditor.operation.Deserializer;
 import codeEditor.buffer.Buffer;
 import codeEditor.dataControl.Editor;
+import codeEditor.dataControl.Executor;
 import codeEditor.operation.Operation;
 import codeEditor.sessionLayer.AbstractSession;
 import codeEditor.transform.Transformation;
@@ -27,7 +28,7 @@ public final class PollService extends Thread implements NetworkHandler{
     private String userId;
     private String docId;
     private Transformation tranformation;
-    private Buffer buffer;
+    private Editor model;
     private AbstractSession session;
   
     @Override
@@ -63,16 +64,16 @@ public final class PollService extends Thread implements NetworkHandler{
                             java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
                             ArrayList<Operation> list = gson.fromJson(operations.toString(), listType);
 
-                            System.err.println();
-                            System.err.println("Received = " + list);
+                            /*System.err.println();
+                            System.err.println("Received = " + list);*/
                             
                             ArrayList<Operation> transformed = this.tranformation.transform(list);
                             
-                            System.err.println();
-                            System.err.println("Transformed = " + transformed);
+                            /*System.err.println();
+                            System.err.println("Transformed = " + transformed);*/
                             
                             for (Operation o: transformed) {
-                                buffer.put(o);
+                                model.performOperation(o);
                             }
                         } catch (JSONException ex) {
                             System.err.println("Illegal JSON format");
@@ -127,8 +128,8 @@ public final class PollService extends Thread implements NetworkHandler{
         return this;
     }
     
-    public PollService setBuffer(Buffer executeBuffer){
-        this.buffer = executeBuffer;
+    public PollService setExecutor(Editor model){
+        this.model = model;
         return this;
     }
     

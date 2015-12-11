@@ -17,8 +17,8 @@ public class CompoundOT {
                 } else {
                     ArrayList<Operation> newLocalOperations = new ArrayList<>();
                     for (Operation local: localOperations) {
-                        Operation transformed1 = OperationalTransform.transform(local, remote, true);
-                        Operation transformed2 = OperationalTransform.transform(remote, local, false);
+                        Operation transformed1 = OperationalTransform.transform(local, remote, false);
+                        Operation transformed2 = OperationalTransform.transform(remote, local, true);
                         remote = transformed1;
                         newLocalOperations.add(transformed2);
                     }
