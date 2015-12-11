@@ -23,6 +23,7 @@ public class InsertOperation extends Operation implements UserOperations {
         super(o.operationId, o.userId,  o.type);
         this.charToInsert = o.charToInsert;
         this.position = o.position;    
+        this.synTimeStamp = o.synTimeStamp;
     }
     
     @Override
@@ -59,6 +60,7 @@ public class InsertOperation extends Operation implements UserOperations {
         s += "Type: " + type + "\n";
         s += "CharToInsert: " + charToInsert + "\n";
         s += "Position: " + position + "\n";
+        s += "SynTimeStamp: " + synTimeStamp + "\n";
         return s;
     }
 }

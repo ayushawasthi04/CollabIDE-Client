@@ -242,6 +242,7 @@ public class AceEditor extends Region implements EventObserver {
     }
 
     public synchronized void notifyTextChange(String json, int start, int end) {
+        System.err.println("Keys Pressed");
         try {
             session.lock();
         

@@ -63,11 +63,13 @@ public final class PollService extends Thread implements NetworkHandler{
                             java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
                             ArrayList<Operation> list = gson.fromJson(operations.toString(), listType);
 
-                            System.err.println("Received" + list);
+                            System.err.println();
+                            System.err.println("Received = " + list);
                             
                             ArrayList<Operation> transformed = this.tranformation.transform(list);
                             
-                            System.err.println("Transformed" + transformed);
+                            System.err.println();
+                            System.err.println("Transformed = " + transformed);
                             
                             for (Operation o: transformed) {
                                 buffer.put(o);

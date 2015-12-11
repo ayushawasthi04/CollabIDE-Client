@@ -14,16 +14,17 @@ public class Transformation{
     private final ArrayList<Operation> localOperations = new ArrayList<>();
   
     public ArrayList<Operation> transform(ArrayList<Operation> remoteOperations) {
-        ArrayList<Operation> transformedOperations;
+        ArrayList<Operation> transformedOperations = new ArrayList<>();
         if (localOperations.isEmpty()) {
-            transformedOperations = remoteOperations;
+            transformedOperations.clear();
+            transformedOperations.addAll(remoteOperations);
         } else {
             transformedOperations = CompoundOT.performTransform(userId, localOperations, remoteOperations);
         }
         return transformedOperations;
     }
     
-    public void addOperation(Operation operation) {
+    public synchronized void addOperation(Operation operation) {
         localOperations.add(operation);
     }
 }

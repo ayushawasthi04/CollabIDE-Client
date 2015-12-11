@@ -45,10 +45,10 @@ public class RepositionOperation extends Operation implements UserOperations {
     @Override
     public String toString() {
         String s = "";
-        s += "OperationId: " + operationId + "\n";
+        /*s += "OperationId: " + operationId + "\n";
         s += "UserId: " + userId + "\n";
         s += "Type: " + type + "\n";
-        s += "Position: " + position + "\n";
+        s += "Position: " + position + "\n";*/
         return s;
     }
 }
