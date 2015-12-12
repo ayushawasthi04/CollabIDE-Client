@@ -2,9 +2,7 @@ package codeEditor.networkLayer;
 
 import static config.NetworkConfig.POLLING_THREAD_SLEEP_TIME;
 import codeEditor.operation.Deserializer;
-import codeEditor.buffer.Buffer;
 import codeEditor.dataControl.Editor;
-import codeEditor.dataControl.Executor;
 import codeEditor.operation.Operation;
 import codeEditor.sessionLayer.AbstractSession;
 import codeEditor.transform.Transformation;
@@ -51,32 +49,25 @@ public final class PollService extends Thread implements NetworkHandler{
             } else {
                 new Thread(()->{
                     try {
-                        try {
-                            session.lock();
-                            JSONObject jsonObject = new JSONObject(content);
-                            session.setLastSynchronized((Integer) jsonObject.get("last_sync"));
-                            JSONArray operations = (JSONArray) jsonObject.get("operations");
+                        session.lock();
 
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            gsonBuilder.registerTypeAdapter(Operation.class, new Deserializer());
-                            Gson gson = gsonBuilder.create();
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        gsonBuilder.registerTypeAdapter(Operation.class, new Deserializer());
+                        Gson gson = gsonBuilder.create();
 
-                            java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
-                            ArrayList<Operation> list = gson.fromJson(operations.toString(), listType);
+                        java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
+                        ArrayList<Operation> list = gson.fromJson(content, listType);
 
-                            /*System.err.println();
-                            System.err.println("Received = " + list);*/
-                            
-                            ArrayList<Operation> transformed = this.tranformation.transform(list);
-                            
-                            /*System.err.println();
-                            System.err.println("Transformed = " + transformed);*/
-                            
-                            for (Operation o: transformed) {
-                                model.performOperation(o);
-                            }
-                        } catch (JSONException ex) {
-                            System.err.println("Illegal JSON format");
+                        System.err.println();
+                        System.err.println("Received = " + list);
+
+                        ArrayList<Operation> transformed = this.tranformation.transform(list);
+
+                        System.err.println();
+                        System.err.println("Transformed = " + transformed);
+
+                        for (Operation o: transformed) {
+                            model.performOperation(o);
                         }
                     } catch (InterruptedException ex) {
                     } finally {

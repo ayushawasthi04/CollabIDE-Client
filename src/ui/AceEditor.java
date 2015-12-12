@@ -256,7 +256,7 @@ public class AceEditor extends Region implements EventObserver {
     }
 
     public synchronized void notifyTextChange(String json, int start, int end) {
-        //try {
+       // try {
             //session.lock();
         
             GsonBuilder builder = new GsonBuilder();
