@@ -34,12 +34,11 @@ public class Signup {
                     Status status = gson.fromJson(content, Status.class);
                     return status;
                 } catch (IOException | UnsupportedOperationException ex) {
-                    ex.printStackTrace(System.err);
+                    throw new ConnectivityFailureException("Unable to connect.");
                 }
             } catch(IOException e) {
                 throw new ConnectivityFailureException("Unable to connect.");
             }
         } while (!retry);
-        return null;
     }
 }

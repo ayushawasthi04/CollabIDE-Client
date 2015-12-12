@@ -54,7 +54,7 @@ public abstract class AbstractSession {
         pollService = sessionFactory.createPollService()
                     .setUserId(userId)
                     .setDocId(docId)
-                    .setExecutor(model)
+                    .setEditor(model)
                     .setTranformation(transformation)
                     .setSession(this);
         executor = sessionFactory.createExecutor(model, executeBuffer);
@@ -103,7 +103,6 @@ public abstract class AbstractSession {
  
     //Lock and Unlock Session
     public void lock() throws InterruptedException {
-        //while (!executeBuffer.isEmpty());
         //guarantees that the no operation is done on session untile the session is unlocked again 
         updateState.lock();
         ace.setReadOnly();

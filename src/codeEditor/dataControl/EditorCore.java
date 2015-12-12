@@ -6,6 +6,7 @@ import codeEditor.model.Model;
 import codeEditor.model.Treap;
 import codeEditor.eventNotification.EventSubject;
 import codeEditor.operation.Operation;
+import codeEditor.operation.OperationType;
 import codeEditor.operation.userOperations.EraseOperation;
 import codeEditor.operation.userOperations.InsertOperation;
 import codeEditor.sessionLayer.AbstractSession;
@@ -50,15 +51,18 @@ public class EditorCore implements Editor {
     @Override
     public void performOperation(Operation operation) {
         try {
-            //Perform The operation on the model
+            //perform The operation on the model
+            int lastSynchronized = -1;
             switch(operation.getType().toString()) {
                 case "INSERT":{
                     InsertOperation insertOperation = (InsertOperation) operation;
-                    this.insertCharacter(insertOperation.position, insertOperation.charToInsert);   
+                    this.insertCharacter(insertOperation.position, insertOperation.charToInsert); 
+                    lastSynchronized = insertOperation.synTimeStamp+1;
                 } break;
                 case "ERASE": {
                     EraseOperation eraseOperation = (EraseOperation) operation;
                     this.eraseCharacter(eraseOperation.position);
+                    lastSynchronized = eraseOperation.synTimeStamp+1;    
                 } break;
                 case "REPOSITION": {
                 } break;    
@@ -71,21 +75,10 @@ public class EditorCore implements Editor {
                 //ignore if character belong to the same user.
             } else {
                 //update the lastSynchrnonized 
-                switch(operation.getType().toString()) {
-                    case "INSERT":{
-                        InsertOperation insertOperation = (InsertOperation) operation;
-                        session.setLastSynchronized(insertOperation.getSynTimeStamp()+1);
-                    } break;
-                    case "ERASE": {
-                        EraseOperation eraseOperation = (EraseOperation) operation;
-                        session.setLastSynchronized(eraseOperation.getSynTimeStamp()+1);
-                    } break;
-                    case "REPOSITION": {
-                    } break;    
-                    default: {
-                        throw new OperationNotSupported(operation.getType() + " operation not supported.");
-                    }
+                if (operation.getType() == OperationType.INSERT || operation.getType() == OperationType.ERASE) {
+                    session.setLastSynchronized(lastSynchronized);
                 }
+                //
                 notificationService.notifyObservers(operation);
             }
         } catch (OperationNotSupported e){

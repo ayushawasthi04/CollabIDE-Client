@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 public abstract class NetworkConfig {
+    public static final boolean DEBUG = false; 
+
     //Default Values;
     public static String SERVER_ADDRESS = "http://127.0.0.1:3000";
    

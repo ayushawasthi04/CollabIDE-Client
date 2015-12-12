@@ -42,12 +42,11 @@ public class Login {
                     throw new IncorrectPasswordException(status.statusMessage);
                 }
             } catch (IOException | UnsupportedOperationException ex) {
-                ex.printStackTrace(System.err);
+                throw new ConnectivityFailureException("Unable to connect.");
             }
         } catch(IOException e) {
             throw new ConnectivityFailureException("Unable to connect.");
         }
-        return null;
     }
     
     private static User getUser(String username, String password) throws ConnectivityFailureException { 
@@ -69,11 +68,10 @@ public class Login {
                 
                 return user;
             } catch (IOException | UnsupportedOperationException ex) {
-                ex.printStackTrace(System.err);
+                throw new ConnectivityFailureException("Unable to connect.");
             }
         } catch(IOException e) {
             throw new ConnectivityFailureException("Unable to connect.");
         }
-        return null;
     }
 }

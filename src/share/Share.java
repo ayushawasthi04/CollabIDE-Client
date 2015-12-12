@@ -94,9 +94,11 @@ public class Share {
                     ArrayList<Collections> list = gson.fromJson(serializedContent, listType);
                     return list;
                  }
-            } catch (IOException | UnsupportedOperationException ex) {
+            } catch (UnsupportedOperationException ex) {
                 ex.printStackTrace(System.err);
-            } 
+            } catch (IOException e) {
+                throw new ConnectivityFailureException("Unable to Connect");
+            }
         } catch (IOException e) {
             throw new ConnectivityFailureException("Unable to Connect");
         }

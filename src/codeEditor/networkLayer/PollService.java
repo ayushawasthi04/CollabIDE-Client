@@ -9,6 +9,7 @@ import codeEditor.transform.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import static config.NetworkConfig.DEBUG;
 import static config.NetworkConfig.GET_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
@@ -17,9 +18,6 @@ import java.util.ArrayList;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import urlbuilder.URLBuilder;
 
 public final class PollService extends Thread implements NetworkHandler{
@@ -58,14 +56,18 @@ public final class PollService extends Thread implements NetworkHandler{
                         java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
                         ArrayList<Operation> list = gson.fromJson(content, listType);
 
-                        System.err.println();
-                        System.err.println("Received = " + list);
-
+                        if (DEBUG) {
+                            System.err.println();
+                            System.err.println("Received = " + list);
+                        }
+                        
                         ArrayList<Operation> transformed = this.tranformation.transform(list);
 
-                        System.err.println();
-                        System.err.println("Transformed = " + transformed);
-
+                        if (DEBUG) {
+                            System.err.println();
+                            System.err.println("Transformed = " + transformed);
+                        }
+                        
                         for (Operation o: transformed) {
                             model.performOperation(o);
                         }
@@ -119,7 +121,7 @@ public final class PollService extends Thread implements NetworkHandler{
         return this;
     }
     
-    public PollService setExecutor(Editor model){
+    public PollService setEditor(Editor model){
         this.model = model;
         return this;
     }
