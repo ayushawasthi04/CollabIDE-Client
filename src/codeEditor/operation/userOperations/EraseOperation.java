@@ -46,6 +46,7 @@ public final class EraseOperation extends Operation implements UserOperations {
         this.userId = jsonEntity.userId;
         this.operationId = jsonEntity.operationId;
         this.type = OperationType.ERASE;
+        this.synTimeStamp = jsonEntity.synTimeStamp;
     }
     
     @Override

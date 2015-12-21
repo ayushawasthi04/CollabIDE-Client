@@ -21,14 +21,13 @@ public class Deserializer implements JsonDeserializer<Operation>{
         try {
             JsonObject jsonObject = (JsonObject) json;
             String type = jsonObject.get("type").getAsString(); 
-            Integer serverTimeStamp = jsonObject.get("timeStamp").getAsInt();
             Operation operation;
             switch(type) {
                 case "INSERT": {
-                    operation = new InsertOperation(json.toString()).setSynTimeStamp(serverTimeStamp);
+                    operation = new InsertOperation(json.toString());
                 } break;
                 case "ERASE": {
-                    operation = new EraseOperation(json.toString()).setSynTimeStamp(serverTimeStamp);
+                    operation = new EraseOperation(json.toString());
                 } break;
                 case "REPOSITION": {
                     operation = new RepositionOperation(json.toString());

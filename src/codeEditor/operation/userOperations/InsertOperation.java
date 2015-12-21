@@ -40,6 +40,7 @@ public class InsertOperation extends Operation implements UserOperations {
         this.userId = jsonEntity.userId;
         this.operationId = jsonEntity.operationId;
         this.type = OperationType.INSERT;
+        this.synTimeStamp = jsonEntity.synTimeStamp;
     }   
 
     //Setters and Getters
