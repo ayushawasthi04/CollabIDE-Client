@@ -112,5 +112,13 @@ public abstract class AbstractSession {
         ace.unsetReadOnly();
         updateState.unlock();
     }
+    
+    public void lockMutex() {
+        updateState.lock();
+    }
+    
+    public void unlockMutex() {
+        updateState.unlock();
+    }
 }
 

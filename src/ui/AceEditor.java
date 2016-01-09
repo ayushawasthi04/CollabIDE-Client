@@ -256,8 +256,11 @@ public class AceEditor extends Region implements EventObserver {
     }
 
     public synchronized void notifyTextChange(String json, int start, int end) {
-       // try {
-            //session.lock();
+        if (config.NetworkConfig.DEBUG) {
+            System.err.println("Key Pressed");
+        }
+        try {
+            session.lockMutex();
         
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
@@ -296,10 +299,10 @@ public class AceEditor extends Region implements EventObserver {
                     session.pushOperation(insertOperation);
                 }
             }
-        /*} catch (InterruptedException ex) {
+            
         } finally {
-            //session.unlock();
-        }*/
+            session.unlockMutex();
+        }
     }
 
     private String encodeString(String content) {

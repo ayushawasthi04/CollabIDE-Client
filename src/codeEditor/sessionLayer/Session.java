@@ -12,27 +12,23 @@ public class Session extends AbstractSession {
     }
     
     public void pushOperation(InsertOperation insertOperation){
-        /*updateState.lock();
-        try {*/
-            insertOperation.setSynTimeStamp(this.getLastSynchronized());
-            executor.pushOperation((Operation) insertOperation);
-            transformation.addOperation(insertOperation);
-            pushBuffer.put(insertOperation);
-        /*} finally {
-            updateState.unlock();
-        }*/
+        if (config.NetworkConfig.DEBUG) {
+            System.err.println("Notified");
+        }
+        insertOperation.setSynTimeStamp(this.getLastSynchronized());
+        executor.pushOperation((Operation) insertOperation);
+        transformation.addOperation(insertOperation);
+        pushBuffer.put(insertOperation);
     }
     
     public void pushOperation(EraseOperation eraseOperation) {
-        /*updateState.lock();
-        try {*/
-            eraseOperation.setSynTimeStamp(this.getLastSynchronized());
-            executor.pushOperation((Operation) eraseOperation);
-            transformation.addOperation(eraseOperation);
-            pushBuffer.put(eraseOperation);
-        /*} finally {
-            updateState.unlock();
-        }*/
+        if (config.NetworkConfig.DEBUG) {
+            System.err.println("Notified");
+        }
+        eraseOperation.setSynTimeStamp(this.getLastSynchronized());
+        executor.pushOperation((Operation) eraseOperation);
+        transformation.addOperation(eraseOperation);
+        pushBuffer.put(eraseOperation);
     }
     
     public void pushOperation(RepositionOperation repositionOperation) {
