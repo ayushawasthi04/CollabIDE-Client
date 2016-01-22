@@ -92,6 +92,7 @@ public class EditorCore implements Editor {
         }
     }
     
+    @Override
     public void setReflectOperations(boolean flag) {
         this.REFLECT_OPERATIONS_FLAG = flag;
     }
