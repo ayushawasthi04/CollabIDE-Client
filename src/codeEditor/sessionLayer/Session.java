@@ -19,7 +19,11 @@ public class Session extends AbstractSession {
         insertOperation.setSynTimeStamp(this.getLastSynchronized());
         executor.pushOperation((Operation) insertOperation);
         transformation.addOperation(insertOperation);
-        pushBuffer.put(insertOperation);
+        try {
+            pushBuffer.put(insertOperation);
+        } catch(InterruptedException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
     
     public void pushOperation(EraseOperation eraseOperation) {
@@ -28,10 +32,18 @@ public class Session extends AbstractSession {
         eraseOperation.setSynTimeStamp(this.getLastSynchronized());
         executor.pushOperation((Operation) eraseOperation);
         transformation.addOperation(eraseOperation);
-        pushBuffer.put(eraseOperation);
+        try {
+            pushBuffer.put(eraseOperation);
+        } catch(InterruptedException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
     
     public void pushOperation(RepositionOperation repositionOperation) {
-        pushBuffer.put(repositionOperation);    
+        try {
+            pushBuffer.put(repositionOperation);    
+        } catch(InterruptedException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
 }

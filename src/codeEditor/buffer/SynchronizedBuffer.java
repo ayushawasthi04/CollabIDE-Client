@@ -7,21 +7,13 @@ public class SynchronizedBuffer implements Buffer {
     BlockingQueue buffer = new LinkedBlockingQueue() {};
     
     @Override
-    public void put(Object request) {
-        try {
-            buffer.put(request);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace(System.err);
-        }
+    public void put(Object request) throws InterruptedException {
+        buffer.put(request);
     }
     
     @Override
-    public Object take() {
-        try {
-            return buffer.take();
-        } catch (InterruptedException ex) {
-        }
-        return null;
+    public Object take() throws InterruptedException{
+        return buffer.take();
     }
     
     @Override

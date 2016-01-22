@@ -2,6 +2,8 @@ package codeEditor.dataControl;
 
 import codeEditor.operation.Operation;
 import codeEditor.buffer.Buffer;
+import config.Debug;
+import static config.Debug.EXECUTOR_DEBUG;
 
 public class Executor extends Thread{
     Editor editorCore;
@@ -13,19 +15,26 @@ public class Executor extends Thread{
     }
     
     public void pushOperation(Operation operation) {
-        operationBuffer.put(operation);
+        try {
+            operationBuffer.put(operation);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
     
     @Override
     public void run() {
+        Debug.log("Executor Started", EXECUTOR_DEBUG);
+        
         while (!this.isInterrupted()) {
-            Operation operation = (Operation) operationBuffer.take();
-            if (operation != null) {
+            try {
+                Operation operation = (Operation) operationBuffer.take();
                 editorCore.performOperation(operation);
-            } else { // can happen when thread is interrupted
+            } catch (InterruptedException ex) {
                 break;
-            } 
+            }
         }
-        System.err.println("Executor Stopped");
+        
+        Debug.log("Executor Stopped", EXECUTOR_DEBUG);
     }
 }

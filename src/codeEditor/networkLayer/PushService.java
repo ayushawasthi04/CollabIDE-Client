@@ -63,12 +63,12 @@ public final class PushService extends Thread implements NetworkHandler{
         while (!this.isInterrupted()) {
             try {
                 do {
-                   Operation operation = (Operation) buffer.take();
-                   if (operation != null) {  
+                    try {
+                        Operation operation = (Operation) buffer.take();
                         operationsToPush.add(operation);
-                   } else { // caused when thread is interrupted
-                       throw new InterruptedException();
-                   }
+                    } catch(InterruptedException ex) { 
+                       throw ex;
+                    }
                 } while (!buffer.isEmpty() && operationsToPush.size() < THRESHOLD);
             } catch (InterruptedException ex) {
                 break;
