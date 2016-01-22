@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 public abstract class NetworkConfig {
-    public static final boolean DEBUG = false; 
-
     //Default Values;
     public static String SERVER_ADDRESS = "http://127.0.0.1:3000";
    
@@ -52,8 +50,7 @@ public abstract class NetworkConfig {
             SERVER_ADDRESS = "http://" + SERVER_IP + ":" + SERVER_PORT;
             
             POLLING_THREAD_SLEEP_TIME  = Integer.parseInt(properties.getProperty("POLLING_THREAD_SLEEP_TIME"));
-            NOTIFICATIONS_THREAD_SLEEP_TIME  = Integer.parseInt(properties.getProperty("NOTIFICATIONS_THREAD_SLEEP_TIME"));
-            
+            NOTIFICATIONS_THREAD_SLEEP_TIME  = Integer.parseInt(properties.getProperty("NOTIFICATIONS_THREAD_SLEEP_TIME"));            
         } catch (FileNotFoundException e) {
             System.out.println("FileNotFoundException. Error Reading Config File.");
             e.printStackTrace(System.err);

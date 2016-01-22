@@ -14,6 +14,8 @@ import codeEditor.sessionLayer.Session;
 import codeEditor.utility.RandomGen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import config.Debug;
+import static config.Debug.KEYLOG_DEBUG;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
@@ -22,8 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -256,9 +256,7 @@ public class AceEditor extends Region implements EventObserver {
     }
 
     public synchronized void notifyTextChange(String json, int start, int end) {
-        if (config.NetworkConfig.DEBUG) {
-            System.err.println("Key Pressed");
-        }
+        Debug.log("Key Pressed", KEYLOG_DEBUG);
         try {
             session.lockMutex();
         
@@ -381,8 +379,6 @@ public class AceEditor extends Region implements EventObserver {
 
     @Override
     public void notifyObserver(Operation operation) {
-        //System.out.println("Hi");
-        //System.out.println(operation.getType());
         if (operation.getType() == OperationType.INSERT) {
             InsertOperation insertOperation = (InsertOperation) operation;
 

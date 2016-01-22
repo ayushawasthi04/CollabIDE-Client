@@ -9,6 +9,8 @@ import codeEditor.transform.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import config.Debug;
+import static config.Debug.POLL_THREAD_DEBUG;
 import static config.NetworkConfig.GET_OPERATIONS;
 import static config.NetworkConfig.SERVER_ADDRESS;
 import java.io.IOException;
@@ -55,17 +57,11 @@ public final class PollService extends Thread implements NetworkHandler{
                         java.lang.reflect.Type listType = new TypeToken<ArrayList<Operation>>() {}.getType();
                         ArrayList<Operation> list = gson.fromJson(content, listType);
 
-                        if (config.NetworkConfig.DEBUG) {
-                            System.err.println();
-                            System.err.println("Received = " + list);
-                        }
+                        Debug.log("Received: " + list, POLL_THREAD_DEBUG);
                         
                         ArrayList<Operation> transformed = this.tranformation.transform(list);
 
-                        if (config.NetworkConfig.DEBUG) {
-                            System.err.println();
-                            System.err.println("Transformed = " + transformed);
-                        }
+                        Debug.log("Transformed: " + transformed, POLL_THREAD_DEBUG);
                         
                         for (Operation o: transformed) {
                             model.performOperation(o);
@@ -83,6 +79,8 @@ public final class PollService extends Thread implements NetworkHandler{
     
     @Override
     public void run(){ 
+        Debug.log("Poll Started", POLL_THREAD_DEBUG);
+        
         URLBuilder urlBuilder = new URLBuilder(); 
         urlBuilder.setServerAddress(SERVER_ADDRESS).setMethod(GET_OPERATIONS);
         urlBuilder.addParameter("userId", userId).addParameter("docId", docId);
@@ -96,7 +94,8 @@ public final class PollService extends Thread implements NetworkHandler{
                 break;
             }
         }
-        System.err.println("Poll Stopped");
+        
+        Debug.log("Poll Stopped", POLL_THREAD_DEBUG);
     }
 
     //Setters for Builder
