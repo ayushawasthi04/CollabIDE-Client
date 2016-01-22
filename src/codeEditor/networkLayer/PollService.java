@@ -48,7 +48,7 @@ public final class PollService extends Thread implements NetworkHandler{
             } else {
                 new Thread(()->{
                     try {
-                        session.lock();
+                        session.lockSession();
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         gsonBuilder.registerTypeAdapter(Operation.class, new Deserializer());
@@ -68,7 +68,7 @@ public final class PollService extends Thread implements NetworkHandler{
                         }
                     } catch (InterruptedException ex) {
                     } finally {
-                        session.unlock();
+                        session.unlockSession();
                     } 
                 }).start();
             }

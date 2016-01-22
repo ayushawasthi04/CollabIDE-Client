@@ -73,15 +73,17 @@ public abstract class AbstractSession {
     }
     
     public void stopSession() {
-        System.err.println("Stopping Push Thread");
         pushService.interrupt();
-        System.err.println("Stopping Poll Thread ");
         pollService.interrupt();
-        System.err.println("Stopping Executor Thread ");
         executor.interrupt();
         
         //Unregister user from doc
         new UnregisterUser(userId, docId, executor).unregisterUser();
+    }
+    
+    //Set Reflect Operations Flag
+    public void setReflectOperations(boolean flag){
+        model.setReflectOperations(flag);
     }
        
     //Register the user for updates from remote
@@ -102,13 +104,13 @@ public abstract class AbstractSession {
     
  
     //Lock and Unlock Session
-    public void lock() throws InterruptedException {
-        //guarantees that the no operation is done on session untile the session is unlocked again 
+    public void lockSession() throws InterruptedException {
+        //no operation can be performed on session until session is unlocked 
         updateState.lock();
         ace.setReadOnly();
     }
     
-    public void unlock() {
+    public void unlockSession() {
         ace.unsetReadOnly();
         updateState.unlock();
     }

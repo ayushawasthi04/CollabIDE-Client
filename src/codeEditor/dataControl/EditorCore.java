@@ -22,6 +22,8 @@ public class EditorCore implements Editor {
     private final AbstractSession session;
     private final EventSubject notificationService; 
     
+    private boolean REFLECT_OPERATIONS_FLAG = false;
+    
     public EditorCore(String userId, String docId, EventSubject notificationService, AbstractSession session) {
         this.userId = userId;
         this.docId = docId;    
@@ -72,7 +74,11 @@ public class EditorCore implements Editor {
             }
             
             if (operation.userId.equals(this.userId)) {
-                //ignore if character belong to the same user.
+                if (REFLECT_OPERATIONS_FLAG) {
+                    notificationService.notifyObservers(operation);
+                } else {
+                    //ignore if character belong to same user.
+                }
             } else {
                 //update the lastSynchrnonized 
                 if (operation.getType() == OperationType.INSERT || operation.getType() == OperationType.ERASE) {
@@ -84,5 +90,9 @@ public class EditorCore implements Editor {
         } catch (OperationNotSupported e){
             e.printStackTrace(System.err);
         }
+    }
+    
+    public void setReflectOperations(boolean flag) {
+        this.REFLECT_OPERATIONS_FLAG = flag;
     }
 }
