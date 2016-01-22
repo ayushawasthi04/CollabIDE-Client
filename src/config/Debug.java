@@ -6,6 +6,8 @@ public class Debug {
     public static boolean KEYLOG_DEBUG = false;
     
     public static void log(String s, boolean flag) {
-        System.err.println(s);
+        if (flag) {
+            System.err.println(s);
+        }
     }
 }
