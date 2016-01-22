@@ -4,6 +4,8 @@ import codeEditor.networkLayer.SendPostRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import config.Debug;
+import static config.Debug.PROJECT_MANAGER_DEBUG;
 import static config.NetworkConfig.PROJECT_ADD_NODE;
 import static config.NetworkConfig.PROJECT_VIEW;
 import static config.NetworkConfig.SERVER_ADDRESS;
@@ -47,7 +49,7 @@ public class Collections extends Node {
                     throw new UnableToCreateException("Unable To Create");
                 } else {
                     if (node.getType() == Type.COLLECTION) {
-                        System.err.println("received : " + serializedContent);
+                        Debug.log(serializedContent, PROJECT_MANAGER_DEBUG);
                         Collections newCollection = new Gson().fromJson(serializedContent, Collections.class);
                         return newCollection;
                     } else {
@@ -81,7 +83,7 @@ public class Collections extends Node {
                 String serializedContent = IOUtils.toString(inStream);
                 if (serializedContent.equals("")) {
                 } else {
-                    //System.out.println(serializedContent);
+                    Debug.log(serializedContent, PROJECT_MANAGER_DEBUG);
 
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     gsonBuilder.registerTypeAdapter(Node.class, new projectManager.Deserializer());
