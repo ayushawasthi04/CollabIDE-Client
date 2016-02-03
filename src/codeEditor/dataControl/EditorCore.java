@@ -75,6 +75,7 @@ public class EditorCore implements Editor {
             
             if (operation.userId.equals(this.userId)) {
                 if (REFLECT_OPERATIONS_FLAG) {
+                    //notifies the user of his own operations
                     notificationService.notifyObservers(operation);
                 } else {
                     //ignore if character belong to same user.

@@ -10,7 +10,6 @@ import codeEditor.networkLayer.PollService;
 import codeEditor.networkLayer.PushService;
 import config.Configuration;
 import java.util.concurrent.locks.ReentrantLock;
-import ui.AceEditor;
 
 public abstract class AbstractSession {
     
@@ -34,7 +33,7 @@ public abstract class AbstractSession {
     
     protected final EventSubject eventNotification;
     
-    protected AceEditor ace;
+    protected EventObserver workspace;
     
     public AbstractSession(String userId, String docId) {
         
@@ -88,7 +87,7 @@ public abstract class AbstractSession {
        
     //Register the user for updates from remote
     public void register(EventObserver observer) {
-        this.ace = (AceEditor) observer;
+        this.workspace = observer;
         this.eventNotification.addObserver(observer);
     }
         
@@ -104,14 +103,14 @@ public abstract class AbstractSession {
     
  
     //Lock and Unlock Session
-    public void lockSession() throws InterruptedException {
+    public void lockWorkspace() throws InterruptedException {
         //no operation can be performed on session until session is unlocked 
         updateState.lock();
-        ace.setReadOnly();
+        workspace.setReadOnly();
     }
     
-    public void unlockSession() {
-        ace.unsetReadOnly();
+    public void unlockWorkspace() {
+        workspace.unsetReadOnly();
         updateState.unlock();
     }
     
